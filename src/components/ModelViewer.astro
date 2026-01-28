@@ -1,0 +1,28 @@
+---
+const {
+  url,
+  name = "N/A",
+  isInteractive = true,
+  height = "360px",
+  cameraControls = true,
+} = Astro.props;
+---
+
+<model-viewer
+  style={`height:${height}; width:100%;`}
+  src={url}
+  ar
+  autoplay
+  ar-placement="wall"
+  alt={name}
+  auto-rotate
+  exposure="2"
+  {...cameraControls ? { "camera-controls": "" } : {}}
+>
+  <button
+    slot="ar-button"
+    class={`${isInteractive ? "" : "hidden "}px-1.5 py-1 bg-white rounded-lg absolute bottom-2 right-2 active:translate-y-0.5 active:translate-x-0.5`}
+  >
+    Presiona <br /> aquí
+  </button>
+</model-viewer>

@@ -1,17 +1,37 @@
 ---
-
+import BaseLayout from "@layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="Luminarte Projects"
+  description="Fabricación de letreros LED Neón"
+  noindex
+>
+  <section>
+    <div class="justify-self-center my-auto">
+      <h1 class="text-center mb-6 font-bold text-3xl drop-shadow-md">
+        Letreros Neón LED
+      </h1>
+
+      <h2 class="text-center my-6 font-light drop-shadow-md">
+        Expertos en fabricación de letreros LED Neón.<br />
+        Diseñamos en Neón LED.
+      </h2>
+
+      <a
+        href="https://wa.me/message/AOE5RFUGMXV3N1"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="block w-fit mx-auto my-8.75"
+      >
+        <button
+          class="text-lg text-neutral-50 uppercase border-neutral-50 shadow-[3px_3px_#fafafa]
+                 cursor-pointer px-5 py-2.5 rounded-[10px] border-2 border-solid
+                 active:shadow-none active:translate-x-0.75 active:translate-y-0.75"
+        >
+          Contáctanos ya
+        </button>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

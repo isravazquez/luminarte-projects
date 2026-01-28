@@ -6,9 +6,18 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "sync:model-viewer": "cp node_modules/@google/model-viewer/dist/model-viewer.min.js public/vendor/model-viewer.min.js && cp node_modules/@google/model-viewer/dist/model-viewer.min.js.map public/vendor/model-viewer.min.js.map"
   },
   "dependencies": {
-    "astro": "^5.16.15"
+    "@fontsource/montserrat": "^5.2.8",
+    "@google/model-viewer": "^4.1.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.16.15",
+    "react-icons": "^5.5.0",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@astrojs/vercel": "^9.0.4"
   }
 }

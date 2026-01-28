@@ -1,0 +1,116 @@
+---
+import { FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+
+const { full = true } = Astro.props;
+---
+
+<footer class="mt-auto">
+  <div class="xl:max-w-7xl xl:mx-auto">
+    {
+      full && (
+        <div class="w-full flex md:flex-row flex-col justify-around items-start p-5">
+          <ul class="p-5 mx-auto md:mx-0">
+            <img
+              src="/logo-black.svg"
+              width="80"
+              height="80"
+              alt="logo"
+              class="drop-shadow-md pb-6 mx-auto"
+            />
+
+            <div class="flex gap-6 pb-5">
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
+                <FaInstagram className="text-2xl cursor-pointer hover:text-yellow-600" />
+              </a>
+              <a
+                href="https://x.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="X (Twitter)"
+              >
+                <FaXTwitter className="text-2xl cursor-pointer hover:text-blue-600" />
+              </a>
+              <a
+                href="https://tiktok.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok"
+              >
+                <FaTiktok className="text-2xl cursor-pointer hover:text-blue-600" />
+              </a>
+              <a
+                href="https://youtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+              >
+                <FaYoutube className="text-2xl cursor-pointer hover:text-red-600" />
+              </a>
+            </div>
+          </ul>
+
+          <ul class="p-5">
+            <p class="text-gray-800 font-bold text-2xl pb-4">Servicios</p>
+            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+              Sitios AR
+            </li>
+            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+              Hospedaje
+            </li>
+            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+              Modelado
+            </li>
+          </ul>
+
+          <ul class="p-5">
+            <p class="text-gray-800 font-bold text-2xl pb-4">Empresa</p>
+            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+              Quiénes Somos
+            </li>
+            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+              Servicios
+            </li>
+            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+              Cotizaciones
+            </li>
+          </ul>
+
+          <ul class="p-5">
+            <p class="text-gray-800 font-bold text-2xl pb-4">Soporte</p>
+            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+              Contacto
+            </li>
+            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+              Blog
+            </li>
+            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+              Recursos
+            </li>
+          </ul>
+        </div>
+      )
+    }
+
+    <div
+      class="text-white flex flex-col justify-center items-center text-center pb-2"
+    >
+      <h1 class="font-semibold">
+        © 2026 All rights reserved |
+        <a
+          href="https://luminarte.mx"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-red-600 font-semibold cursor-pointer"
+        >
+          {" "}Lumin <span class="text-white">Arte</span>
+        </a>
+      </h1>
+    </div>
+  </div>
+</footer>
