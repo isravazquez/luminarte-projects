@@ -15,6 +15,10 @@ const {
   <div class="lv-model-loading" data-model-loading>
     <div class="lv-spinner" aria-hidden="true"></div>
     <p>{loadingLabel}</p>
+    <div class="lv-loading-row" aria-hidden="true">
+      <span>Cargando modelo</span>
+      <span data-model-progress-label>0%</span>
+    </div>
     <small>Esto puede tardar unos segundos dependiendo de tu conexión.</small>
   </div>
 
@@ -27,7 +31,11 @@ const {
     ar-placement="wall"
     alt={name}
     auto-rotate
+    auto-rotate-delay="0"
     exposure="2"
+    shadow-intensity="0.9"
+    shadow-softness="0.85"
+    environment-image="neutral"
     loading="eager"
     reveal="auto"
     {...cameraControls ? { "camera-controls": "" } : {}}
@@ -64,20 +72,24 @@ const {
         const viewer = shell.querySelector("model-viewer");
         const loading = shell.querySelector("[data-model-loading]");
         const progressBar = shell.querySelector("[data-model-progress]");
+        const progressLabel = shell.querySelector("[data-model-progress-label]");
 
-        if (!viewer || !loading || !progressBar) return;
+        if (!viewer || !loading || !progressBar || !progressLabel) return;
 
         const markLoaded = () => {
           shell.classList.add("is-loaded");
           loading.setAttribute("aria-hidden", "true");
           progressBar.style.width = "100%";
+          progressLabel.textContent = "100%";
         };
 
         viewer.addEventListener("progress", (event) => {
           const detail = event.detail || {};
           const totalProgress =
             typeof detail.totalProgress === "number" ? detail.totalProgress : 0;
-          progressBar.style.width = `${Math.round(totalProgress * 100)}%`;
+          const pct = Math.round(totalProgress * 100);
+          progressBar.style.width = `${pct}%`;
+          progressLabel.textContent = `${pct}%`;
         });
 
         viewer.addEventListener("load", markLoaded, { once: true });
@@ -86,6 +98,10 @@ const {
             "<p>No pudimos cargar el modelo 3D.</p><small>Intenta recargar la página o contáctanos por WhatsApp.</small>";
           shell.classList.remove("is-loaded");
         });
+
+        viewer.addEventListener("camera-change", () => {
+          shell.classList.add("is-interacting");
+        }, { once: true });
       });
     };
 
