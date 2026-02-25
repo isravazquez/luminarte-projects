@@ -5,30 +5,94 @@ const {
   isInteractive = true,
   height = "360px",
   cameraControls = true,
+  showHint = true,
+  loadingLabel = "Cargando vista 3D",
+  class: className = "",
 } = Astro.props;
 ---
 
-<model-viewer
-  style={`height:${height}; width:100%;`}
-  src={url}
-  ar
-  autoplay
-  ar-placement="wall"
-  alt={name}
-  auto-rotate
-  exposure="2"
-  {...cameraControls ? { "camera-controls": "" } : {}}
->
-  <div class="progress-bar hide" slot="progress-bar">
-    <div class="update-bar"></div>
+<div class={`lv-model-shell ${className}`} data-model-shell>
+  <div class="lv-model-loading" data-model-loading>
+    <div class="lv-spinner" aria-hidden="true"></div>
+    <p>{loadingLabel}</p>
+    <small>Esto puede tardar unos segundos dependiendo de tu conexión.</small>
   </div>
-  <button
-    class={`${isInteractive ? "" : "hidden "} text-red-600 px-1.5 py-1 bg-white rounded-lg  
-    absolute bottom-2 right-2 active:translate-y-0.5 
-    active:translate-x-0.5`}
-    slot="ar-button"
-    id="ar-button"
+
+  <model-viewer
+    class="lv-model-viewer"
+    style={`height:${height}; width:100%;`}
+    src={url}
+    ar
+    autoplay
+    ar-placement="wall"
+    alt={name}
+    auto-rotate
+    exposure="2"
+    loading="eager"
+    reveal="auto"
+    {...cameraControls ? { "camera-controls": "" } : {}}
   >
-    Presiona <br /> aquí
-  </button>
-</model-viewer>
+    <div class="lv-progress" slot="progress-bar" aria-hidden="true">
+      <div class="lv-progress-bar" data-model-progress></div>
+    </div>
+
+    <button
+      class={`${isInteractive ? "" : "hidden "}lv-ar-button`}
+      slot="ar-button"
+      type="button"
+    >
+      Ver en AR
+    </button>
+  </model-viewer>
+</div>
+
+{
+  showHint && (
+    <p class="lv-hint">
+      Arrastra para girar el modelo y usa zoom para revisar detalles.
+    </p>
+  )
+}
+
+<script is:inline>
+  (() => {
+    const bindModelShells = () => {
+      document.querySelectorAll("[data-model-shell]").forEach((shell) => {
+        if (shell.dataset.bound === "true") return;
+        shell.dataset.bound = "true";
+
+        const viewer = shell.querySelector("model-viewer");
+        const loading = shell.querySelector("[data-model-loading]");
+        const progressBar = shell.querySelector("[data-model-progress]");
+
+        if (!viewer || !loading || !progressBar) return;
+
+        const markLoaded = () => {
+          shell.classList.add("is-loaded");
+          loading.setAttribute("aria-hidden", "true");
+          progressBar.style.width = "100%";
+        };
+
+        viewer.addEventListener("progress", (event) => {
+          const detail = event.detail || {};
+          const totalProgress =
+            typeof detail.totalProgress === "number" ? detail.totalProgress : 0;
+          progressBar.style.width = `${Math.round(totalProgress * 100)}%`;
+        });
+
+        viewer.addEventListener("load", markLoaded, { once: true });
+        viewer.addEventListener("error", () => {
+          loading.innerHTML =
+            "<p>No pudimos cargar el modelo 3D.</p><small>Intenta recargar la página o contáctanos por WhatsApp.</small>";
+          shell.classList.remove("is-loaded");
+        });
+      });
+    };
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", bindModelShells, { once: true });
+    } else {
+      bindModelShells();
+    }
+  })();
+</script>
