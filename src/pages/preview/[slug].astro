@@ -59,6 +59,9 @@ function buildWhatsAppLink(intent: "approve" | "changes" | "info") {
 }
 
 const summaryText = metaDescription;
+const shareTitle = metaTitle;
+const shareText = "Revisa esta propuesta de LuminArte.";
+const shareUrl = Astro.url.toString();
 
 Astro.response.headers.set(
   "Cache-Control",
@@ -249,6 +252,21 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
           </a>
         </div>
       </section>
+
+      <div class="mt-4 flex flex-col items-center justify-center gap-2 text-center">
+        <button
+          type="button"
+          class="btn-press btn-tertiary gap-2 px-4 py-2 text-sm"
+          data-share-proposal
+          data-share-title={shareTitle}
+          data-share-text={shareText}
+          data-share-url={shareUrl}
+        >
+          <span aria-hidden="true" class="text-base leading-none">↗</span>
+          Compartir propuesta
+        </button>
+        <p class="min-h-[1.25rem] text-xs text-white/65" data-share-feedback></p>
+      </div>
     </div>
   </section>
 
@@ -396,3 +414,48 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
     </script>
   )
 }
+
+<script is:inline>
+  (() => {
+    const btn = document.querySelector("[data-share-proposal]");
+    const feedback = document.querySelector("[data-share-feedback]");
+    if (!btn || !feedback) return;
+
+    let feedbackTimer;
+
+    const setFeedback = (message) => {
+      feedback.textContent = message;
+      window.clearTimeout(feedbackTimer);
+      feedbackTimer = window.setTimeout(() => {
+        feedback.textContent = "";
+      }, 1800);
+    };
+
+    btn.addEventListener("click", async () => {
+      const title = btn.getAttribute("data-share-title") || document.title;
+      const text = btn.getAttribute("data-share-text") || "";
+      const url = btn.getAttribute("data-share-url") || window.location.href;
+
+      try {
+        if (navigator.share) {
+          await navigator.share({ title, text, url });
+          setFeedback("Propuesta compartida");
+          return;
+        }
+
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(url);
+          setFeedback("Enlace copiado");
+          return;
+        }
+
+        setFeedback("No se pudo compartir");
+      } catch (error) {
+        if (error && typeof error === "object" && "name" in error && error.name === "AbortError") {
+          return;
+        }
+        setFeedback("No se pudo compartir");
+      }
+    });
+  })();
+</script>

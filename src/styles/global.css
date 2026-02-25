@@ -239,6 +239,20 @@ a {
   box-shadow: 2px 2px #fafafa, 0 0 0.65rem rgba(255, 255, 255, 0.18);
 }
 
+.btn-tertiary {
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(8, 10, 16, 0.45);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 2px 2px rgba(255, 255, 255, 0.5);
+}
+
+.btn-tertiary:hover {
+  filter: brightness(1.03);
+  box-shadow:
+    2px 2px rgba(255, 255, 255, 0.6),
+    0 0 0.5rem rgba(255, 255, 255, 0.08);
+}
+
 @keyframes lv-spin {
   to {
     transform: rotate(360deg);
