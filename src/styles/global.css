@@ -5,6 +5,9 @@
 @import "@fontsource/montserrat/600.css";
 @import "@fontsource/montserrat/700.css";
 
+:root {
+  color-scheme: dark;
+}
 
 *,
 *::before,
@@ -14,10 +17,128 @@
 
 body {
   font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background-image: radial-gradient(rgb(60, 47, 226) 40%, rgb(29, 29, 29) 120%);
+  color: #fff;
+  background-color: #090a12;
+  background-image:
+    radial-gradient(circle at 15% 15%, rgba(84, 153, 255, 0.35), transparent 42%),
+    radial-gradient(circle at 85% 10%, rgba(20, 184, 166, 0.18), transparent 35%),
+    radial-gradient(circle at 50% 120%, rgba(99, 102, 241, 0.22), transparent 55%),
+    linear-gradient(180deg, #090a12 0%, #111320 100%);
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.lv-model-shell {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: rgba(6, 8, 14, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.lv-model-viewer {
+  display: block;
+  background:
+    radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.07), transparent 45%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+}
+
+.lv-model-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  gap: 0.35rem;
+  text-align: center;
+  padding: 1rem;
+  background: linear-gradient(180deg, rgba(8, 10, 16, 0.65), rgba(8, 10, 16, 0.85));
+  color: rgba(255, 255, 255, 0.95);
+  transition: opacity 220ms ease, visibility 220ms ease;
+}
+
+.lv-model-shell.is-loaded .lv-model-loading {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.lv-spinner {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: 0 auto 0.2rem;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: rgba(255, 255, 255, 0.9);
+  animation: lv-spin 0.8s linear infinite;
+}
+
+.lv-model-loading p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.lv-model-loading small {
+  color: rgba(255, 255, 255, 0.65);
+  max-width: 22rem;
+  line-height: 1.35;
+}
+
+.lv-progress {
+  width: 38%;
+  max-width: 12rem;
+  min-width: 7rem;
+  height: 0.35rem;
+  border-radius: 9999px;
+  margin: 0 auto 0.9rem;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.lv-progress-bar {
+  width: 8%;
+  height: 100%;
+  background: linear-gradient(90deg, #34d399, #f8fafc);
+  transition: width 180ms ease;
+}
+
+.lv-ar-button {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.92);
+  color: #0b0d15;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.8rem;
+  line-height: 1.1;
+  font-weight: 700;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.lv-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.35rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+@keyframes lv-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

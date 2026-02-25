@@ -14,10 +14,29 @@ const project = await getProjectBySlug(slug);
 if (!project) return new Response("Not found", { status: 404 });
 
 const title = project.name ?? `Preview: ${project.slug}`;
-const description = project.description ?? "";
+const description = project.description?.trim() ?? "";
 
 const glbUrl = getMediaUrl(project.model);
 const imageUrls = getMediaUrlsFromGallery(project.images);
+const coverImage = imageUrls[0] ?? "";
+
+const WHATSAPP_BASE = "https://wa.me/message/AOE5RFUGMXV3N1";
+function buildWhatsAppLink(intent: "approve" | "changes" | "info") {
+  const subject = project.name ?? slug;
+  const messages = {
+    approve: `Hola, revisé la propuesta "${subject}" y me gustaría avanzar con la aprobación. ¿Me comparten siguientes pasos?`,
+    changes: `Hola, revisé la propuesta "${subject}" y me gustaría solicitar algunos ajustes. ¿Podemos revisarlos?`,
+    info: `Hola, revisé la propuesta "${subject}" y tengo algunas dudas. ¿Me pueden ayudar?`,
+  } as const;
+
+  return `${WHATSAPP_BASE}?text=${encodeURIComponent(
+    `${messages[intent]}\n\nReferencia: ${slug}`,
+  )}`;
+}
+
+const summaryText =
+  description ||
+  "Propuesta visual personalizada de LuminArte. Revisa el modelo 3D, explora detalles y contáctanos para aprobación o ajustes.";
 
 Astro.response.headers.set(
   "Cache-Control",
@@ -25,47 +44,183 @@ Astro.response.headers.set(
 );
 ---
 
-<BaseLayout title={title} description={description} noindex>
-  <section class="mx-auto px-4">
-    <h1 class="text-2xl text-center font-bold drop-shadow-md">
-      {title}
-    </h1>
+<BaseLayout
+  title={`${title} | Propuesta LuminArte`}
+  description={summaryText}
+  ogImage={coverImage}
+  noindex
+  headerCompact
+  mainClass="px-4 pb-6"
+>
+  <section class="mx-auto w-full max-w-6xl">
+    <div class="rounded-3xl border border-white/[0.12] bg-white/[0.06] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.2)] backdrop-blur-md md:p-6">
+      <div class="flex flex-col gap-2 border-b border-white/10 pb-4 md:pb-5">
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">
+          Propuesta personalizada
+        </p>
+        <h1 class="text-2xl font-bold leading-tight md:text-4xl">{title}</h1>
+        <p class="max-w-3xl text-sm leading-6 text-white/80 md:text-base">
+          {summaryText}
+        </p>
+      </div>
 
-    <div class="mx-auto">
-      <div>
-        {
-          glbUrl ? (
-            <ModelViewer url={glbUrl} name={title} isInteractive={true} />
-          ) : (
-            <div class="flex h-130 items-center justify-center opacity-70">
-              No hay modelo (campo <code>model</code>).
+      <div class="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(280px,0.75fr)]">
+        <div class="rounded-2xl border border-white/10 bg-black/20 p-3">
+          {
+            glbUrl ? (
+              <ModelViewer
+                url={glbUrl}
+                name={title}
+                isInteractive={true}
+                height="min(62vh, 560px)"
+              />
+            ) : (
+              <div class="flex min-h-[320px] flex-col items-center justify-center rounded-xl border border-dashed border-white/20 bg-white/[0.03] px-5 text-center">
+                <p class="text-lg font-semibold">Modelo 3D no disponible por ahora</p>
+                <p class="mt-2 max-w-sm text-sm text-white/75">
+                  Esta propuesta aún no incluye el archivo 3D. Escríbenos por WhatsApp y
+                  te compartimos una actualización o alternativas visuales.
+                </p>
+                <a
+                  href={buildWhatsAppLink("info")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mt-5 inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/[0.15]"
+                >
+                  Solicitar actualización
+                </a>
+              </div>
+            )
+          }
+        </div>
+
+        <aside class="flex flex-col gap-4 rounded-2xl border border-white/10 bg-black/20 p-4">
+          <div class="rounded-xl border border-white/10 bg-white/[0.05] p-4">
+            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">
+              Qué puedes hacer aquí
+            </p>
+            <ul class="mt-3 space-y-2 text-sm text-white/85">
+              <li>Revisar el modelo 3D desde distintos ángulos</li>
+              <li>Validar proporciones y apariencia general</li>
+              <li>Solicitar ajustes o avanzar a aprobación</li>
+            </ul>
+          </div>
+
+          <div class="rounded-xl border border-emerald-300/25 bg-emerald-400/[0.08] p-4">
+            <p class="text-sm font-semibold text-emerald-100">
+              Siguiente paso recomendado
+            </p>
+            <p class="mt-1 text-sm leading-6 text-emerald-50/[0.9]">
+              Escríbenos por WhatsApp para confirmar aprobación o enviarnos ajustes sobre esta propuesta.
+            </p>
+            <div class="mt-4 grid gap-2">
+              <a
+                href={buildWhatsAppLink("approve")}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center rounded-xl bg-emerald-400 px-4 py-3 text-center text-sm font-semibold text-black shadow-[0_10px_30px_rgba(16,185,129,0.25)] transition hover:bg-emerald-300"
+              >
+                Aprobar por WhatsApp
+              </a>
+              <a
+                href={buildWhatsAppLink("changes")}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                Solicitar ajustes
+              </a>
             </div>
-          )
-        }
+          </div>
+
+          <div class="rounded-xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/75">
+            <p class="font-semibold text-white">Tip de revisión</p>
+            <p class="mt-1 leading-6">
+              Si estás en celular, usa dos dedos para zoom. En desktop, arrastra para girar el modelo y valida detalles desde diferentes ángulos.
+            </p>
+          </div>
+        </aside>
       </div>
 
       {
-        imageUrls.length ? (
-          <div class="mt-3">
-            {imageUrls.map((u: string) => (
-              <a
-                href={u}
-                target="_blank"
-                class="block overflow-hidden rounded-xl border border-white/10"
-              >
-                <img
-                  src={u}
-                  alt=""
-                  loading="lazy"
-                  class="h-40 w-full object-cover"
-                />
-              </a>
-            ))}
-          </div>
-        ) : (
-          ""
+        description && (
+          <section class="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-4 md:p-5">
+            <h2 class="text-lg font-semibold md:text-xl">Descripción de la propuesta</h2>
+            <p class="mt-3 whitespace-pre-line text-sm leading-7 text-white/85 md:text-base">
+              {description}
+            </p>
+          </section>
         )
       }
+
+      {
+        imageUrls.length > 0 && (
+          <section class="mt-6">
+            <div class="flex items-center justify-between gap-3">
+              <h2 class="text-lg font-semibold md:text-xl">Referencias visuales</h2>
+              <span class="text-xs text-white/60">
+                {imageUrls.length} {imageUrls.length === 1 ? "imagen" : "imágenes"}
+              </span>
+            </div>
+
+            <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {imageUrls.map((u: string, index: number) => (
+                <a
+                  href={u}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="group block overflow-hidden rounded-2xl border border-white/10 bg-black/20"
+                >
+                  <div class="relative aspect-[16/10] overflow-hidden">
+                    <img
+                      src={u}
+                      alt={`Referencia visual ${index + 1} de ${title}`}
+                      loading="lazy"
+                      decoding="async"
+                      class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                    />
+                    <span class="absolute bottom-2 left-2 rounded-lg bg-black/55 px-2 py-1 text-xs font-medium text-white">
+                      Abrir imagen
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      <section class="mt-6 rounded-2xl border border-white/10 bg-gradient-to-r from-white/[0.07] to-white/[0.02] p-4 md:flex md:items-center md:justify-between md:gap-5">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">
+            ¿Listo para avanzar?
+          </p>
+          <h2 class="mt-1 text-lg font-semibold md:text-xl">
+            Confírmanos aprobación o cambios para continuar con tu proyecto
+          </h2>
+          <p class="mt-1 text-sm leading-6 text-white/75">
+            Te responderemos con siguientes pasos, tiempos y cualquier ajuste necesario.
+          </p>
+        </div>
+        <div class="mt-4 grid gap-2 md:mt-0 md:min-w-[18rem]">
+          <a
+            href={buildWhatsAppLink("approve")}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-black transition hover:bg-white/90"
+          >
+            Aprobar propuesta
+          </a>
+          <a
+            href={buildWhatsAppLink("changes")}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+          >
+            Quiero solicitar cambios
+          </a>
+        </div>
+      </section>
     </div>
   </section>
 </BaseLayout>
