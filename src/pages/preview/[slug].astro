@@ -18,7 +18,31 @@ const description = project.description?.trim() ?? "";
 
 const glbUrl = getMediaUrl(project.model);
 const imageUrls = getMediaUrlsFromGallery(project.images);
-const coverImage = imageUrls[0] ?? "";
+const coverImage = imageUrls[0] ?? "/logo.avif";
+
+const metaTitle = `Propuesta | ${title} | LuminArte`;
+const metaDescription = (
+  description ||
+  `Revisa la propuesta de ${title}, valida detalles y confirma por WhatsApp si avanzamos o si necesitas ajustes.`
+)
+  .replace(/\s+/g, " ")
+  .trim()
+  .slice(0, 180);
+
+const preconnectOrigins = Array.from(
+  new Set(
+    [glbUrl, ...imageUrls]
+      .filter((u): u is string => typeof u === "string" && u.length > 0)
+      .map((u) => {
+        try {
+          return new URL(u).origin;
+        } catch {
+          return "";
+        }
+      })
+      .filter(Boolean),
+  ),
+);
 
 const WHATSAPP_BASE = "https://wa.me/524771737105";
 function buildWhatsAppLink(intent: "approve" | "changes" | "info") {
@@ -34,20 +58,20 @@ function buildWhatsAppLink(intent: "approve" | "changes" | "info") {
   )}`;
 }
 
-const summaryText =
-  description ||
-  "Revisa esta propuesta, valida detalles y confirma por WhatsApp si avanzamos o si necesitas ajustes.";
+const summaryText = metaDescription;
 
 Astro.response.headers.set(
   "Cache-Control",
   "public, max-age=0, s-maxage=120, stale-while-revalidate=300",
 );
+Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
 ---
 
 <BaseLayout
-  title={`${title} | Propuesta LuminArte`}
-  description={summaryText}
+  title={metaTitle}
+  description={metaDescription}
   ogImage={coverImage}
+  preconnectOrigins={preconnectOrigins}
   noindex
   headerCompact
   mainClass="px-4 pb-6"

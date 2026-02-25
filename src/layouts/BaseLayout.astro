@@ -2,6 +2,7 @@
 import "@/styles/global.css";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
+
 const {
   title = "Luminarte Projects",
   description = "",
@@ -9,7 +10,39 @@ const {
   ogImage = "",
   headerCompact = false,
   mainClass = "",
+  canonicalUrl = "",
+  preconnectOrigins = [],
+  ogType = "website",
 } = Astro.props;
+
+const pageUrl = Astro.url?.toString?.() ?? "";
+const canonical = canonicalUrl || pageUrl || "";
+const siteName = "LuminArte";
+const locale = "es_MX";
+const themeColor = "#1d1d1d";
+const normalizedOgImage = (() => {
+  if (!ogImage || typeof ogImage !== "string") return "";
+  if (ogImage.startsWith("http")) return ogImage;
+  try {
+    return new URL(ogImage, Astro.url).toString();
+  } catch {
+    return ogImage;
+  }
+})();
+const normalizedPreconnectOrigins = Array.from(
+  new Set(
+    (Array.isArray(preconnectOrigins) ? preconnectOrigins : [])
+      .filter((origin: unknown): origin is string => typeof origin === "string" && origin.length > 0)
+      .map((origin) => {
+        try {
+          return new URL(origin).origin;
+        } catch {
+          return "";
+        }
+      })
+      .filter(Boolean),
+  ),
+);
 ---
 
 <!doctype html>
@@ -18,14 +51,35 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta name="theme-color" content={themeColor} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex, nofollow, noarchive" />}
+    {noindex && <meta name="googlebot" content="noindex, nofollow, noarchive" />}
+    {noindex && <meta name="bingbot" content="noindex, nofollow, noarchive" />}
     <meta property="og:title" content={title} />
     {description && <meta property="og:description" content={description} />}
-    <meta property="og:type" content="website" />
-    {ogImage && <meta property="og:image" content={ogImage} />}
-    <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:locale" content={locale} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {normalizedOgImage && <meta property="og:image" content={normalizedOgImage} />}
+    <meta name="twitter:card" content={normalizedOgImage ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {normalizedOgImage && <meta name="twitter:image" content={normalizedOgImage} />}
+
+    {
+      normalizedPreconnectOrigins.map((origin) => (
+        <>
+          <link rel="dns-prefetch" href={origin} />
+          <link rel="preconnect" href={origin} crossorigin />
+        </>
+      ))
+    }
 
     <!-- <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script> -->
     <script type="module" src="/vendor/model-viewer.min.js"></script>
