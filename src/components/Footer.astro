@@ -5,17 +5,17 @@ import { FaXTwitter } from "react-icons/fa6";
 const { full = true } = Astro.props;
 ---
 
-<footer class="mt-auto">
-  <div class="xl:max-w-7xl xl:mx-auto">
+<footer class="mt-auto w-full">
+  <div class="mx-auto w-full max-w-7xl px-4 pb-3">
     {
       full && (
-        <div class="w-full flex md:flex-row flex-col justify-around items-start p-5">
+        <div class="flex w-full flex-col items-start justify-around p-5 md:flex-row">
           <ul class="p-5 mx-auto md:mx-0">
             <img
-              src="/logo-black.svg"
+              src="/logo.png"
               width="80"
               height="80"
-              alt="logo"
+              alt="LuminArte"
               class="drop-shadow-md pb-6 mx-auto"
             />
 
@@ -93,6 +93,49 @@ const { full = true } = Astro.props;
               Recursos
             </li>
           </ul>
+        </div>
+      )
+    }
+
+    {
+      !full && (
+        <div class="mb-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 md:p-5">
+          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div class="flex items-center gap-3">
+              <img
+                src="/logo.png"
+                width="72"
+                height="36"
+                alt="LuminArte"
+                class="h-10 w-auto drop-shadow-md"
+              />
+              <div>
+                <p class="text-sm font-semibold text-white">LuminArte</p>
+                <p class="text-xs text-white/70">
+                  Propuestas visuales y acompañamiento para tu proyecto
+                </p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 text-sm text-white/85">
+              <a href="tel:+524771737105" target="_blank" rel="noopener noreferrer" class="hover:text-white">
+                +52 477 173 7105
+              </a>
+              <span class="hidden text-white/30 md:inline">•</span>
+              <a href="mailto:contacto@luminarte.mx" target="_blank" rel="noopener noreferrer" class="hover:text-white">
+                contacto@luminarte.mx
+              </a>
+              <span class="hidden text-white/30 md:inline">•</span>
+              <a
+                href="https://wa.me/524771737105"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-white"
+              >
+                WhatsApp
+              </a>
+            </div>
+          </div>
         </div>
       )
     }

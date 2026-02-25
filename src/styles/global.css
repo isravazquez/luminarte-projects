@@ -18,12 +18,7 @@
 body {
   font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   color: #fff;
-  background-color: #090a12;
-  background-image:
-    radial-gradient(circle at 15% 15%, rgba(84, 153, 255, 0.35), transparent 42%),
-    radial-gradient(circle at 85% 10%, rgba(20, 184, 166, 0.18), transparent 35%),
-    radial-gradient(circle at 50% 120%, rgba(99, 102, 241, 0.22), transparent 55%),
-    linear-gradient(180deg, #090a12 0%, #111320 100%);
+  background-image: radial-gradient(rgb(60, 47, 226) 40%, rgb(29, 29, 29) 120%);
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
@@ -135,6 +130,57 @@ a {
   font-size: 0.85rem;
   line-height: 1.35rem;
   color: rgba(255, 255, 255, 0.72);
+}
+
+.btn-press {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid #fafafa;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 2px 2px #fafafa;
+  transition:
+    transform 75ms ease,
+    box-shadow 75ms ease,
+    filter 160ms ease,
+    background-color 160ms ease;
+}
+
+.btn-press:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px #fafafa;
+}
+
+.btn-press:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.btn-primary {
+  color: #fafafa;
+  background: #ed3337;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.06);
+  box-shadow:
+    2px 2px #fafafa,
+    0 0 0.6rem rgba(237, 51, 55, 0.45),
+    0 0 1.2rem rgba(237, 51, 55, 0.22);
+}
+
+.btn-secondary {
+  color: #ed3337;
+  background: #fafafa;
+}
+
+.btn-secondary:hover {
+  filter: brightness(1.02);
+  box-shadow: 2px 2px #fafafa, 0 0 0.65rem rgba(255, 255, 255, 0.18);
 }
 
 @keyframes lv-spin {

@@ -24,8 +24,17 @@ export function getMediaUrl(media: any): string | null {
 }
 
 export function getMediaUrlsFromGallery(images: any): string[] {
-  const arr = Array.isArray(images) ? images : (images?.data ?? []);
-  if (!Array.isArray(arr)) return [];
+  const directSingle = getMediaUrl(images);
+  if (directSingle) return [directSingle];
+
+  const dataSingle = getMediaUrl(images?.data);
+  if (dataSingle) return [dataSingle];
+
+  const arr = Array.isArray(images)
+    ? images
+    : Array.isArray(images?.data)
+      ? images.data
+      : [];
 
   return arr
     .map((img: any) => getMediaUrl(img))
@@ -41,4 +50,3 @@ export async function getProjectBySlug(slug: string): Promise<ProjectDoc | null>
   const json = await contentFetch<ListResponse<ProjectDoc>>(`/api/projects?${qs.toString()}`);
   return json.data?.[0] ?? null;
 }
-
