@@ -1,43 +1,64 @@
-# Astro Starter Kit: Minimal
+# LuminArte Projects
 
-```sh
-npm create astro@latest -- --template minimal
+Plataforma de propuestas y previews para clientes de LuminArte.
+
+Este proyecto en Astro renderiza páginas privadas de propuesta (`/preview/[slug]`) conectadas al CMS (Strapi), con soporte para:
+
+- modelo 3D (`model`)
+- imágenes (`images`)
+- videos (`videos`)
+- descripción (`description`)
+
+## Uso
+
+Desde la raíz `luminarte-web`:
+
+```bash
+npm --prefix luminarte-projects run dev
+npm --prefix luminarte-projects run build
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Variables de entorno
 
-## 🚀 Project Structure
+Crear `.env` en `luminarte-projects` con:
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+CMS_URL=https://tu-cms.com
+CMS_TOKEN=tu_token_opcional
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Notas:
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+- `CMS_TOKEN` es opcional si el endpoint es público.
+- `CMS_URL` es requerido.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Rutas principales
 
-## 🧞 Commands
+- `/` página de apoyo (contacto + contexto de uso)
+- `/preview/[slug]` propuesta privada para cliente
+- `/404` página de error personalizada
 
-All commands are run from the root of the project, from a terminal:
+## Contenido esperado desde CMS (`projects`)
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+- `slug` texto único
+- `name` texto
+- `description` texto
+- `model` media (GLB)
+- `images` media (idealmente múltiple)
+- `videos` media (idealmente múltiple)
 
-## 👀 Want to learn more?
+## Comportamiento de la propuesta
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- `noindex` y `X-Robots-Tag` para evitar indexación
+- metadata Open Graph/Twitter para compartir mejor por WhatsApp/Slack
+- galería fullscreen con imágenes y videos
+- control mobile para evitar conflicto entre scroll y giro del modelo 3D
+
+## Mantenimiento útil
+
+- `public/vendor/model-viewer.min.js` se sirve localmente
+- script disponible:
+
+```bash
+npm --prefix luminarte-projects run sync:model-viewer
+```

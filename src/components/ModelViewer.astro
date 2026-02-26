@@ -5,30 +5,153 @@ const {
   isInteractive = true,
   height = "360px",
   cameraControls = true,
+  showHint = true,
+  loadingLabel = "Cargando vista 3D",
+  class: className = "",
 } = Astro.props;
 ---
 
-<model-viewer
-  style={`height:${height}; width:100%;`}
-  src={url}
-  ar
-  autoplay
-  ar-placement="wall"
-  alt={name}
-  auto-rotate
-  exposure="2"
-  {...cameraControls ? { "camera-controls": "" } : {}}
->
-  <div class="progress-bar hide" slot="progress-bar">
-    <div class="update-bar"></div>
+<div class={`lv-model-shell ${className}`} data-model-shell>
+  <div class="lv-model-loading" data-model-loading>
+    <div class="lv-spinner" aria-hidden="true"></div>
+    <p>{loadingLabel}</p>
+    <div class="lv-loading-row" aria-hidden="true">
+      <span>Cargando modelo</span>
+      <span data-model-progress-label>0%</span>
+    </div>
+    <small>Esto puede tardar unos segundos dependiendo de tu conexión.</small>
   </div>
+
+  <div class="lv-touch-gate hidden" data-model-touch-gate aria-hidden="true">
+    <button type="button" class="lv-touch-gate-btn" data-model-enable-touch>
+      Interactuar
+    </button>
+  </div>
+
   <button
-    class={`${isInteractive ? "" : "hidden "} text-red-600 px-1.5 py-1 bg-white rounded-lg  
-    absolute bottom-2 right-2 active:translate-y-0.5 
-    active:translate-x-0.5`}
-    slot="ar-button"
-    id="ar-button"
+    type="button"
+    class="lv-touch-lock hidden"
+    data-model-disable-touch
+    aria-label="Bloquear interacción del modelo"
+    title="Bloquear interacción"
   >
-    Presiona <br /> aquí
+    Bloquear giro
   </button>
-</model-viewer>
+
+  <model-viewer
+    class="lv-model-viewer"
+    style={`height:${height}; width:100%;`}
+    src={url}
+    ar
+    autoplay
+    ar-placement="wall"
+    alt={name}
+    auto-rotate
+    auto-rotate-delay="0"
+    exposure="2"
+    shadow-intensity="0.9"
+    shadow-softness="0.85"
+    environment-image="neutral"
+    loading="eager"
+    reveal="auto"
+    {...cameraControls ? { "camera-controls": "" } : {}}
+  >
+    <div class="lv-progress" slot="progress-bar" aria-hidden="true">
+      <div class="lv-progress-bar" data-model-progress></div>
+    </div>
+
+    <button
+      class={`${isInteractive ? "" : "hidden "}lv-ar-button`}
+      slot="ar-button"
+      type="button"
+    >
+      Ver en AR
+    </button>
+  </model-viewer>
+</div>
+
+{
+  showHint && (
+    <p class="lv-hint">
+      Arrastra para girar el modelo y usa zoom para revisar detalles.
+    </p>
+  )
+}
+
+<script is:inline>
+  (() => {
+    const bindModelShells = () => {
+      document.querySelectorAll("[data-model-shell]").forEach((shell) => {
+        if (shell.dataset.bound === "true") return;
+        shell.dataset.bound = "true";
+
+        const viewer = shell.querySelector("model-viewer");
+        const loading = shell.querySelector("[data-model-loading]");
+        const progressBar = shell.querySelector("[data-model-progress]");
+        const progressLabel = shell.querySelector("[data-model-progress-label]");
+        const touchGate = shell.querySelector("[data-model-touch-gate]");
+        const enableTouchBtn = shell.querySelector("[data-model-enable-touch]");
+        const disableTouchBtn = shell.querySelector("[data-model-disable-touch]");
+
+        if (!viewer || !loading || !progressBar || !progressLabel || !touchGate || !enableTouchBtn || !disableTouchBtn) return;
+
+        const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+        const shouldLockTouch = isTouchDevice && viewer.hasAttribute("camera-controls");
+
+        const setTouchLock = (locked) => {
+          shell.classList.toggle("is-touch-locked", locked);
+          shell.classList.toggle("is-touch-unlocked", !locked);
+          touchGate.classList.toggle("hidden", !locked);
+          touchGate.setAttribute("aria-hidden", locked ? "false" : "true");
+          disableTouchBtn.classList.toggle("hidden", locked);
+        };
+
+        if (shouldLockTouch) {
+          setTouchLock(true);
+        }
+
+        const markLoaded = () => {
+          shell.classList.add("is-loaded");
+          loading.setAttribute("aria-hidden", "true");
+          progressBar.style.width = "100%";
+          progressLabel.textContent = "100%";
+        };
+
+        viewer.addEventListener("progress", (event) => {
+          const detail = event.detail || {};
+          const totalProgress =
+            typeof detail.totalProgress === "number" ? detail.totalProgress : 0;
+          const pct = Math.round(totalProgress * 100);
+          progressBar.style.width = `${pct}%`;
+          progressLabel.textContent = `${pct}%`;
+        });
+
+        viewer.addEventListener("load", markLoaded, { once: true });
+        viewer.addEventListener("error", () => {
+          loading.innerHTML =
+            "<p>No pudimos cargar el modelo 3D.</p><small>Intenta recargar la página o contáctanos por WhatsApp.</small>";
+          shell.classList.remove("is-loaded");
+        });
+
+        viewer.addEventListener("camera-change", () => {
+          shell.classList.add("is-interacting");
+        }, { once: true });
+
+        enableTouchBtn.addEventListener("click", () => {
+          setTouchLock(false);
+          shell.classList.add("is-interacting");
+        });
+
+        disableTouchBtn.addEventListener("click", () => {
+          setTouchLock(true);
+        });
+      });
+    };
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", bindModelShells, { once: true });
+    } else {
+      bindModelShells();
+    }
+  })();
+</script>

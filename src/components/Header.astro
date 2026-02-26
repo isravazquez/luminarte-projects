@@ -1,9 +1,19 @@
-<header class="flex justify-center max-w-7xl mx-auto my-10">
+---
+const { compact = false } = Astro.props;
+---
+
+<header
+  class:list={[
+    "w-full flex justify-center px-4",
+    compact ? "max-w-6xl mx-auto mt-5 mb-4" : "max-w-7xl mx-auto my-10",
+  ]}
+>
   <img
-    src="/logo.png"
-    width="256"
-    height="128"
-    alt="logo"
-    class="drop-shadow-md"
+    src="/logo.avif"
+    alt="LuminArte logo"
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    class="h-12 w-auto object-contain drop-shadow-md sm:h-16"
   />
 </header>

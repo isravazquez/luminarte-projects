@@ -5,6 +5,9 @@
 @import "@fontsource/montserrat/600.css";
 @import "@fontsource/montserrat/700.css";
 
+:root {
+  color-scheme: dark;
+}
 
 *,
 *::before,
@@ -14,10 +17,314 @@
 
 body {
   font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #fff;
   background-image: radial-gradient(rgb(60, 47, 226) 40%, rgb(29, 29, 29) 120%);
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.lv-model-shell {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: rgba(6, 8, 14, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 18px 38px rgba(0, 0, 0, 0.16);
+}
+
+.lv-model-viewer {
+  display: block;
+  background:
+    radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.07), transparent 45%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+}
+
+.lv-model-shell.is-touch-locked .lv-model-viewer {
+  pointer-events: none;
+}
+
+.lv-model-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 20%);
+}
+
+.lv-model-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  gap: 0.35rem;
+  text-align: center;
+  padding: 1rem;
+  background: linear-gradient(180deg, rgba(8, 10, 16, 0.65), rgba(8, 10, 16, 0.85));
+  color: rgba(255, 255, 255, 0.95);
+  transition: opacity 220ms ease, visibility 220ms ease;
+}
+
+.lv-model-shell.is-loaded .lv-model-loading {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.lv-spinner {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: 0 auto 0.2rem;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: rgba(255, 255, 255, 0.9);
+  animation: lv-spin 0.8s linear infinite;
+}
+
+.lv-model-loading p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.lv-loading-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.02em;
+}
+
+.lv-loading-row span:last-child {
+  min-width: 2.4rem;
+  text-align: right;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.lv-model-loading small {
+  color: rgba(255, 255, 255, 0.65);
+  max-width: 22rem;
+  line-height: 1.35;
+}
+
+.lv-progress {
+  width: 38%;
+  max-width: 12rem;
+  min-width: 7rem;
+  height: 0.35rem;
+  border-radius: 9999px;
+  margin: 0 auto 0.9rem;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.lv-progress-bar {
+  width: 8%;
+  height: 100%;
+  background: linear-gradient(90deg, #34d399, #f8fafc);
+  transition: width 180ms ease;
+}
+
+.lv-ar-button {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 0.75rem;
+  background: #ed3337;
+  color: #fafafa;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.8rem;
+  line-height: 1.1;
+  font-weight: 700;
+  box-shadow:
+    2px 2px #fafafa,
+    0 10px 24px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+  transition:
+    transform 80ms ease,
+    box-shadow 120ms ease,
+    filter 140ms ease;
+}
+
+.lv-ar-button:hover {
+  filter: brightness(1.06);
+  box-shadow:
+    3px 3px #fafafa,
+    0 0 0.6rem rgba(237, 51, 55, 0.4),
+    0 10px 24px rgba(0, 0, 0, 0.14);
+}
+
+.lv-ar-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.lv-ar-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.95);
+  outline-offset: 2px;
+}
+
+.lv-touch-gate {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 4;
+  display: flex;
+}
+
+.lv-touch-gate.hidden {
+  display: none;
+}
+
+.lv-touch-gate-btn {
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
+  color: #0b0d15;
+  border-radius: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.8rem;
+  line-height: 1.1;
+  font-weight: 700;
+  box-shadow:
+    2px 2px #fafafa,
+    0 10px 24px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+  transition:
+    transform 80ms ease,
+    box-shadow 120ms ease,
+    filter 140ms ease;
+}
+
+.lv-touch-gate-btn:hover {
+  filter: brightness(1.02);
+  box-shadow:
+    3px 3px #fafafa,
+    0 10px 24px rgba(0, 0, 0, 0.14);
+}
+
+.lv-touch-gate-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.lv-touch-lock {
+  position: absolute;
+  top: 0.7rem;
+  left: 0.7rem;
+  z-index: 4;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(8, 10, 16, 0.55);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+
+.lv-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.35rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.lv-model-shell.is-interacting + .lv-hint {
+  opacity: 0.45;
+}
+
+@media (pointer: fine) {
+  .lv-touch-gate,
+  .lv-touch-lock {
+    display: none !important;
+  }
+}
+
+.btn-press {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid #fafafa;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 2px 2px #fafafa;
+  transition:
+    transform 75ms ease,
+    box-shadow 75ms ease,
+    filter 160ms ease,
+    background-color 160ms ease;
+}
+
+.btn-press:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px #fafafa;
+}
+
+.btn-press:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.btn-primary {
+  color: #fafafa;
+  background: #ed3337;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.06);
+  box-shadow:
+    2px 2px #fafafa,
+    0 0 0.6rem rgba(237, 51, 55, 0.45),
+    0 0 1.2rem rgba(237, 51, 55, 0.22);
+}
+
+.btn-secondary {
+  color: #ed3337;
+  background: #fafafa;
+}
+
+.btn-secondary:hover {
+  filter: brightness(1.02);
+  box-shadow: 2px 2px #fafafa, 0 0 0.65rem rgba(255, 255, 255, 0.18);
+}
+
+.btn-tertiary {
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(8, 10, 16, 0.45);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 2px 2px rgba(255, 255, 255, 0.5);
+}
+
+.btn-tertiary:hover {
+  filter: brightness(1.03);
+  box-shadow:
+    2px 2px rgba(255, 255, 255, 0.6),
+    0 0 0.5rem rgba(255, 255, 255, 0.08);
+}
+
+@keyframes lv-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

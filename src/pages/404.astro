@@ -1,0 +1,36 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const whatsappUrl = "https://wa.me/524771737105";
+---
+
+<BaseLayout
+  title="Página no encontrada | LuminArte Projects"
+  description="La página que buscas no está disponible. Si necesitas ayuda con una propuesta de LuminArte, contáctanos."
+  noindex
+>
+  <section class="mx-auto w-full max-w-4xl px-4 py-6 text-center">
+    <p class="text-xs uppercase tracking-[0.18em] text-white/70">Error 404</p>
+    <h1 class="mt-3 text-3xl font-bold leading-tight md:text-5xl">
+      Esta página no está disponible
+    </h1>
+    <p class="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/80 md:text-base">
+      Es posible que el enlace esté incompleto, haya cambiado o ya no esté activo.
+      Si recibiste una propuesta de LuminArte, podemos ayudarte a encontrarla.
+    </p>
+
+    <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a href="/" class="btn-press btn-secondary text-sm sm:text-base">
+        Ir al inicio
+      </a>
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-press btn-primary text-sm sm:text-base"
+      >
+        Contactar por WhatsApp
+      </a>
+    </div>
+  </section>
+</BaseLayout>
