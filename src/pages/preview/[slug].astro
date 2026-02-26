@@ -23,7 +23,8 @@ const galleryItems = [
   ...imageUrls.map((url) => ({ type: "image" as const, url })),
   ...videoUrls.map((url) => ({ type: "video" as const, url })),
 ];
-const coverImage = imageUrls[0] ?? "/logo.avif";
+// WhatsApp previews are more reliable with png/jpg than avif for fallback OG images.
+const coverImage = imageUrls[0] ?? "/logo.png";
 const videoPoster = coverImage;
 
 const metaTitle = `Propuesta | ${title} | LuminArte`;
