@@ -24,6 +24,7 @@ const galleryItems = [
   ...videoUrls.map((url) => ({ type: "video" as const, url })),
 ];
 const coverImage = imageUrls[0] ?? "/logo.avif";
+const videoPoster = coverImage;
 
 const metaTitle = `Propuesta | ${title} | LuminArte`;
 const metaDescription = (
@@ -203,6 +204,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
                   data-gallery-index={index}
                   data-gallery-src={item.url}
                   data-gallery-type={item.type}
+                  data-gallery-poster={item.type === "video" ? videoPoster : ""}
                   data-gallery-alt={`${item.type === "video" ? "Video" : "Referencia visual"} ${index + 1} de ${title}`}
                   class="group block overflow-hidden rounded-2xl border border-white/10 bg-black/20 text-left cursor-pointer"
                   aria-label={`Abrir ${item.type === "video" ? "video" : "imagen"} ${index + 1} en pantalla completa`}
@@ -212,6 +214,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
                       item.type === "video" ? (
                         <video
                           src={item.url}
+                          poster={videoPoster}
                           muted
                           playsinline
                           preload="metadata"
@@ -229,9 +232,19 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
                     }
                     {
                       item.type === "video" && (
-                        <span class="absolute left-2 top-2 rounded-lg bg-black/60 px-2 py-1 text-xs font-semibold text-white">
-                          Video
-                        </span>
+                        <>
+                          <span class="absolute left-2 top-2 rounded-lg bg-black/60 px-2 py-1 text-xs font-semibold text-white">
+                            Video
+                          </span>
+                          <span
+                            aria-hidden="true"
+                            class="pointer-events-none absolute inset-0 grid place-items-center"
+                          >
+                            <span class="inline-flex h-14 w-14 items-center justify-center rounded-full bg-black/28 text-white/95 shadow-lg backdrop-blur-sm">
+                              <span class="ml-1 text-3xl leading-none">▶</span>
+                            </span>
+                          </span>
+                        </>
                       )
                     }
                     <span class="absolute bottom-2 left-2 rounded-lg bg-black/55 px-2 py-1 text-xs font-medium text-white">
@@ -381,6 +394,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
         const items = openButtons.map((btn) => ({
           src: btn.getAttribute("data-gallery-src") || "",
           type: btn.getAttribute("data-gallery-type") || "image",
+          poster: btn.getAttribute("data-gallery-poster") || "",
           alt: btn.getAttribute("data-gallery-alt") || "Referencia visual",
         }));
 
@@ -396,11 +410,14 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
           if (isVideo) {
             image.setAttribute("src", "");
             video.setAttribute("src", item.src);
+            if (item.poster) video.setAttribute("poster", item.poster);
+            else video.removeAttribute("poster");
             video.setAttribute("aria-label", item.alt);
             video.load();
           } else {
             video.pause();
             video.removeAttribute("src");
+            video.removeAttribute("poster");
             video.load();
             image.setAttribute("src", item.src);
             image.setAttribute("alt", item.alt);
