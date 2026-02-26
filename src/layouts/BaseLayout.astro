@@ -29,6 +29,13 @@ const normalizedOgImage = (() => {
     return ogImage;
   }
 })();
+const normalizedOgImageType = (() => {
+  if (!normalizedOgImage) return "";
+  if (normalizedOgImage.endsWith(".png")) return "image/png";
+  if (normalizedOgImage.endsWith(".jpg") || normalizedOgImage.endsWith(".jpeg")) return "image/jpeg";
+  if (normalizedOgImage.endsWith(".webp")) return "image/webp";
+  return "";
+})();
 const normalizedPreconnectOrigins = Array.from(
   new Set(
     (Array.isArray(preconnectOrigins) ? preconnectOrigins : [])
@@ -67,6 +74,8 @@ const normalizedPreconnectOrigins = Array.from(
     <meta property="og:locale" content={locale} />
     {canonical && <meta property="og:url" content={canonical} />}
     {normalizedOgImage && <meta property="og:image" content={normalizedOgImage} />}
+    {normalizedOgImage && <meta property="og:image:secure_url" content={normalizedOgImage} />}
+    {normalizedOgImageType && <meta property="og:image:type" content={normalizedOgImageType} />}
     <meta name="twitter:card" content={normalizedOgImage ? "summary_large_image" : "summary"} />
     <meta name="twitter:title" content={title} />
     {description && <meta name="twitter:description" content={description} />}
