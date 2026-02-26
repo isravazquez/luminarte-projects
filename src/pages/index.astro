@@ -1,36 +1,93 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+
+const whatsappUrl = "https://wa.me/524771737105";
 ---
 
 <BaseLayout
-  title="Luminarte Projects"
-  description="Fabricación de letreros LED Neón"
+  title="Propuestas y Previews | LuminArte"
+  description="Plataforma de propuestas visuales para clientes de LuminArte. Revisa previews, modelos 3D y materiales de apoyo."
   noindex
 >
-  <section>
-    <div class="justify-self-center my-auto">
-      <h1 class="text-center mb-6 font-bold text-3xl drop-shadow-md">
-        Letreros Neón LED
-      </h1>
+  <section class="mx-auto w-full max-w-5xl px-4 py-4 text-center">
+    <p class="text-xs uppercase tracking-[0.18em] text-white/70">
+      LuminArte Projects
+    </p>
 
-      <h2 class="text-center my-6 font-light drop-shadow-md">
-        Expertos en fabricación de letreros LED Neón.<br />
-        Diseñamos en Neón LED.
-      </h2>
+    <h1 class="mt-3 text-3xl font-bold leading-tight drop-shadow-md md:text-5xl">
+      Propuestas visuales para revisión y aprobación
+    </h1>
 
+    <p class="mx-auto mt-4 max-w-3xl text-sm leading-7 text-white/80 md:text-base">
+      Esta plataforma se usa para compartir propuestas con clientes de LuminArte.
+      Si recibiste un enlace de proyecto, abre la liga completa para ver el modelo 3D,
+      imágenes y videos de apoyo.
+    </p>
+
+    <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
       <a
-        href="https://wa.me/message/AOE5RFUGMXV3N1"
+        href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="block w-fit mx-auto my-8.75"
+        class="btn-press btn-primary text-sm sm:text-base"
       >
-        <button
-          class="text-lg text-neutral-50 uppercase border-neutral-50 shadow-[3px_3px_#fafafa]
-                 cursor-pointer px-5 py-2.5 rounded-[10px] border-2 border-solid
-                 active:shadow-none active:translate-x-0.75 active:translate-y-0.75"
-        >
-          Contáctanos ya
-        </button>
+        Contactar por WhatsApp
+      </a>
+      <a
+        href="https://luminarte.mx"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-press btn-secondary text-sm sm:text-base"
+      >
+        Ir a luminarte.mx
+      </a>
+    </div>
+
+    <p class="mx-auto mt-8 max-w-2xl text-sm leading-7 text-white/75">
+      ¿Necesitas una revisión de tu propuesta, solicitar ajustes o confirmar avance?
+      Escríbenos por WhatsApp y te ayudamos con el siguiente paso.
+    </p>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-white/75">
+      <a
+        href="https://www.instagram.com/LuminArteMx/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-white"
+      >
+        Instagram
+      </a>
+      <a
+        href="https://www.facebook.com/LuminArteMx/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-white"
+      >
+        Facebook
+      </a>
+      <a
+        href="https://www.youtube.com/@LuminArteMx"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-white"
+      >
+        YouTube
+      </a>
+      <a
+        href="https://www.tiktok.com/@luminartemx"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-white"
+      >
+        TikTok
+      </a>
+      <a
+        href="https://x.com/LuminArteMx"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-white"
+      >
+        X
       </a>
     </div>
   </section>
