@@ -22,6 +22,23 @@ const {
     <small>Esto puede tardar unos segundos dependiendo de tu conexión.</small>
   </div>
 
+  <div class="lv-touch-gate hidden" data-model-touch-gate aria-hidden="true">
+    <button type="button" class="lv-touch-gate-btn" data-model-enable-touch>
+      Tocar para interactuar
+    </button>
+    <p class="lv-touch-gate-note">Desliza la página para continuar bajando.</p>
+  </div>
+
+  <button
+    type="button"
+    class="lv-touch-lock hidden"
+    data-model-disable-touch
+    aria-label="Bloquear interacción del modelo"
+    title="Bloquear interacción"
+  >
+    Bloquear giro
+  </button>
+
   <model-viewer
     class="lv-model-viewer"
     style={`height:${height}; width:100%;`}
@@ -73,8 +90,26 @@ const {
         const loading = shell.querySelector("[data-model-loading]");
         const progressBar = shell.querySelector("[data-model-progress]");
         const progressLabel = shell.querySelector("[data-model-progress-label]");
+        const touchGate = shell.querySelector("[data-model-touch-gate]");
+        const enableTouchBtn = shell.querySelector("[data-model-enable-touch]");
+        const disableTouchBtn = shell.querySelector("[data-model-disable-touch]");
 
-        if (!viewer || !loading || !progressBar || !progressLabel) return;
+        if (!viewer || !loading || !progressBar || !progressLabel || !touchGate || !enableTouchBtn || !disableTouchBtn) return;
+
+        const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+        const shouldLockTouch = isTouchDevice && viewer.hasAttribute("camera-controls");
+
+        const setTouchLock = (locked) => {
+          shell.classList.toggle("is-touch-locked", locked);
+          shell.classList.toggle("is-touch-unlocked", !locked);
+          touchGate.classList.toggle("hidden", !locked);
+          touchGate.setAttribute("aria-hidden", locked ? "false" : "true");
+          disableTouchBtn.classList.toggle("hidden", locked);
+        };
+
+        if (shouldLockTouch) {
+          setTouchLock(true);
+        }
 
         const markLoaded = () => {
           shell.classList.add("is-loaded");
@@ -102,6 +137,15 @@ const {
         viewer.addEventListener("camera-change", () => {
           shell.classList.add("is-interacting");
         }, { once: true });
+
+        enableTouchBtn.addEventListener("click", () => {
+          setTouchLock(false);
+          shell.classList.add("is-interacting");
+        });
+
+        disableTouchBtn.addEventListener("click", () => {
+          setTouchLock(true);
+        });
       });
     };
 

@@ -7,6 +7,7 @@ export type ProjectDoc = {
   description?: string;
   model?: any;
   images?: any;
+  videos?: any;
 };
 
 type ListResponse<T> = { data: T[]; meta?: any };

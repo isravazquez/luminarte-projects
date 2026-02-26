@@ -52,6 +52,10 @@ a {
     linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
 }
 
+.lv-model-shell.is-touch-locked .lv-model-viewer {
+  pointer-events: none;
+}
+
 .lv-model-shell::after {
   content: "";
   position: absolute;
@@ -177,6 +181,54 @@ a {
   outline-offset: 2px;
 }
 
+.lv-touch-gate {
+  position: absolute;
+  inset: auto 0.75rem 0.75rem 0.75rem;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 0.9rem;
+  background: rgba(8, 10, 16, 0.56);
+  backdrop-filter: blur(8px);
+  padding: 0.65rem 0.7rem;
+}
+
+.lv-touch-gate-btn {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.92);
+  color: #0b0d15;
+  border-radius: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lv-touch-gate-note {
+  margin: 0;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+}
+
+.lv-touch-lock {
+  position: absolute;
+  top: 0.7rem;
+  left: 0.7rem;
+  z-index: 4;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(8, 10, 16, 0.55);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+
 .lv-hint {
   margin: 0.75rem 0 0;
   font-size: 0.85rem;
@@ -186,6 +238,13 @@ a {
 
 .lv-model-shell.is-interacting + .lv-hint {
   opacity: 0.45;
+}
+
+@media (pointer: fine) {
+  .lv-touch-gate,
+  .lv-touch-lock {
+    display: none !important;
+  }
 }
 
 .btn-press {
