@@ -6,6 +6,9 @@ import path from "node:path";
 export default defineConfig({
   output: "server",
   adapter: vercel(),
+  devToolbar: {
+    enabled: false,
+  },
   vite: {
     plugins: [tailwindcss()],
     resolve: {

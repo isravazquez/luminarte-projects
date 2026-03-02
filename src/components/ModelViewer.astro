@@ -7,6 +7,8 @@ const {
   cameraControls = true,
   showHint = true,
   loadingLabel = "Cargando vista 3D",
+  ledMeshPrefix = "led",
+  showBloomToggle = true,
   class: className = "",
 } = Astro.props;
 ---
@@ -38,6 +40,19 @@ const {
     Bloquear giro
   </button>
 
+  {
+    showBloomToggle && (
+      <button
+        type="button"
+        class="btn-press btn-tertiary lv-bloom-toggle hidden"
+        data-model-bloom-toggle
+        aria-pressed="true"
+      >
+        Apagar
+      </button>
+    )
+  }
+
   <model-viewer
     class="lv-model-viewer"
     style={`height:${height}; width:100%;`}
@@ -48,14 +63,25 @@ const {
     alt={name}
     auto-rotate
     auto-rotate-delay="0"
-    exposure="2"
+    exposure="1.6"
     shadow-intensity="0.9"
     shadow-softness="0.85"
     environment-image="neutral"
     loading="eager"
     reveal="auto"
+    data-led-prefix={ledMeshPrefix}
     {...cameraControls ? { "camera-controls": "" } : {}}
   >
+    <effect-composer data-selective-composer render-mode="quality">
+      <selective-bloom-effect
+        data-selective-bloom
+        strength="1.6"
+        radius="0.55"
+        threshold="0.1"
+      ></selective-bloom-effect>
+      <color-grade-effect></color-grade-effect>
+    </effect-composer>
+
     <div class="lv-progress" slot="progress-bar" aria-hidden="true">
       <div class="lv-progress-bar" data-model-progress></div>
     </div>
@@ -92,6 +118,9 @@ const {
         const touchGate = shell.querySelector("[data-model-touch-gate]");
         const enableTouchBtn = shell.querySelector("[data-model-enable-touch]");
         const disableTouchBtn = shell.querySelector("[data-model-disable-touch]");
+        const bloomToggleBtn = shell.querySelector("[data-model-bloom-toggle]");
+        const selectiveComposer = shell.querySelector("[data-selective-composer]");
+        const selectiveBloom = shell.querySelector("[data-selective-bloom]");
 
         if (!viewer || !loading || !progressBar || !progressLabel || !touchGate || !enableTouchBtn || !disableTouchBtn) return;
 
@@ -108,6 +137,83 @@ const {
 
         if (shouldLockTouch) {
           setTouchLock(true);
+        }
+
+        const ledPrefix = (viewer.getAttribute("data-led-prefix") || "led").toLowerCase();
+        const baseBloomStrength = Number(selectiveBloom?.getAttribute("strength") || "1.6");
+        let bloomEnabled = true;
+
+        const setBloomToggleState = (enabled) => {
+          bloomEnabled = enabled;
+          if (!bloomToggleBtn) return;
+          bloomToggleBtn.textContent = enabled ? "Apagar" : "Encender";
+          bloomToggleBtn.setAttribute("aria-pressed", enabled ? "true" : "false");
+        };
+
+        const setBloomToggleVisibility = (visible) => {
+          if (!bloomToggleBtn) return;
+          bloomToggleBtn.classList.toggle("hidden", !visible);
+          bloomToggleBtn.setAttribute("aria-hidden", visible ? "false" : "true");
+        };
+
+        setBloomToggleState(true);
+        setBloomToggleVisibility(false);
+        const applySelectiveBloom = () => {
+          if (!selectiveComposer || !selectiveBloom || !selectiveComposer.selection) {
+            return;
+          }
+
+          const selection = [];
+          const hasEmissiveChannel = (material) => {
+            if (!material || !material.emissive) return false;
+            const emissive = material.emissive;
+            const emissiveIntensity =
+              typeof material.emissiveIntensity === "number" ? material.emissiveIntensity : 1;
+            return emissiveIntensity > 0 && (emissive.r > 0 || emissive.g > 0 || emissive.b > 0);
+          };
+
+          const hasEmissiveMaterial = (obj) => {
+            if (!obj || !obj.material) return false;
+            if (Array.isArray(obj.material)) {
+              return obj.material.some((material) => hasEmissiveChannel(material));
+            }
+            return hasEmissiveChannel(obj.material);
+          };
+
+          selectiveComposer.selection.forEach((obj) => {
+            const meshName = (obj?.name || "").toLowerCase();
+            const matchesName =
+              meshName && (meshName === ledPrefix || meshName.startsWith(ledPrefix));
+            const matchesEmissive = hasEmissiveMaterial(obj);
+
+            const shouldSelect = matchesName && matchesEmissive;
+
+            if (shouldSelect) {
+              selection.push(obj);
+            }
+          });
+
+          selectiveBloom.selection = selection;
+          const hasSelectableBloomMeshes = selection.length > 0;
+          setBloomToggleVisibility(hasSelectableBloomMeshes);
+          selectiveBloom.strength =
+            bloomEnabled && hasSelectableBloomMeshes ? baseBloomStrength : 0;
+        };
+
+        bloomToggleBtn?.addEventListener("click", () => {
+          setBloomToggleState(!bloomEnabled);
+          applySelectiveBloom();
+        });
+
+        if (selectiveComposer && selectiveBloom) {
+          selectiveComposer.addEventListener("updated-selection", applySelectiveBloom);
+          viewer.addEventListener(
+            "load",
+            () => {
+              requestAnimationFrame(applySelectiveBloom);
+            },
+            { once: true },
+          );
         }
 
         const markLoaded = () => {

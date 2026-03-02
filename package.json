@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "sync:model-viewer": "cp node_modules/@google/model-viewer/dist/model-viewer.min.js public/vendor/model-viewer.min.js && cp node_modules/@google/model-viewer/dist/model-viewer.min.js.map public/vendor/model-viewer.min.js.map"
+    "sync:model-viewer": "cp node_modules/@google/model-viewer/dist/model-viewer.min.js public/vendor/model-viewer.min.js && cp node_modules/@google/model-viewer/dist/model-viewer.min.js.map public/vendor/model-viewer.min.js.map && cp node_modules/three/build/three.module.min.js public/vendor/three.module.min.js && cp node_modules/three/build/three.core.min.js public/vendor/three.core.min.js && cp node_modules/@google/model-viewer-effects/dist/model-viewer-effects.min.js public/vendor/model-viewer-effects.min.js && cp node_modules/@google/model-viewer-effects/dist/model-viewer-effects.min.js.map public/vendor/model-viewer-effects.min.js.map"
   },
   "dependencies": {
     "@fontsource/montserrat": "^5.2.8",
