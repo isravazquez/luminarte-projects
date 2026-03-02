@@ -1,0 +1,63 @@
+---
+const { title, text, url } = Astro.props;
+---
+
+<div class="mt-4 flex flex-col items-center justify-center gap-2 text-center">
+  <button
+    type="button"
+    class="btn-press btn-tertiary gap-2 px-4 py-2 text-sm"
+    data-share-proposal
+    data-share-title={title}
+    data-share-text={text}
+    data-share-url={url}
+  >
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    Compartir propuesta
+  </button>
+  <p class="min-h-[1.25rem] text-xs text-white/65" data-share-feedback></p>
+</div>
+
+<script is:inline>
+  (() => {
+    const btn = document.querySelector("[data-share-proposal]");
+    const feedback = document.querySelector("[data-share-feedback]");
+    if (!btn || !feedback) return;
+
+    let feedbackTimer;
+
+    const setFeedback = (message) => {
+      feedback.textContent = message;
+      window.clearTimeout(feedbackTimer);
+      feedbackTimer = window.setTimeout(() => {
+        feedback.textContent = "";
+      }, 1800);
+    };
+
+    btn.addEventListener("click", async () => {
+      const title = btn.getAttribute("data-share-title") || document.title;
+      const text = btn.getAttribute("data-share-text") || "";
+      const url = btn.getAttribute("data-share-url") || window.location.href;
+
+      try {
+        if (navigator.share) {
+          await navigator.share({ title, text, url });
+          setFeedback("Propuesta compartida");
+          return;
+        }
+
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(url);
+          setFeedback("Enlace copiado");
+          return;
+        }
+
+        setFeedback("No se pudo compartir");
+      } catch (error) {
+        if (error && typeof error === "object" && "name" in error && error.name === "AbortError") {
+          return;
+        }
+        setFeedback("No se pudo compartir");
+      }
+    });
+  })();
+</script>

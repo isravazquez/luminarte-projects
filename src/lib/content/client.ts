@@ -11,10 +11,10 @@ export function absolutizeUrl(maybeRelative: string) {
 export async function contentFetch<T>(path: string): Promise<T> {
   const url = new URL(path, CMS_URL);
 
-  const headers: HeadersInit = { Accept: "application/json" };
-  if (CMS_TOKEN) (headers as any).Authorization = `Bearer ${CMS_TOKEN}`;
+  const headers: Record<string, string> = { Accept: "application/json" };
+  if (CMS_TOKEN) headers.Authorization = `Bearer ${CMS_TOKEN}`;
 
   const res = await fetch(url.toString(), { headers });
-  if (!res.ok) throw new Error(`Fetch failed ${res.status}`);
+  if (!res.ok) throw new Error(`Fetch failed ${res.status} – ${url}`);
   return (await res.json()) as T;
 }

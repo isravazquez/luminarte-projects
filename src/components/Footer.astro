@@ -1,214 +1,83 @@
 ---
-const { full = true } = Astro.props;
+import { CONTACT_PHONE, CONTACT_EMAIL, WHATSAPP_BASE, SITE_URL, SOCIAL_LINKS } from "@lib/constants";
+
 const currentYear = new Date().getFullYear();
 ---
 
 <footer class="mt-auto w-full">
   <div class="mx-auto w-full max-w-7xl px-4 pb-3">
-    {
-      full && (
-        <div class="flex w-full flex-col items-start justify-around p-5 md:flex-row">
-          <ul class="p-5 mx-auto md:mx-0">
-            <img
-              src="/logo.png"
-              width="80"
-              height="80"
-              alt="LuminArte"
-              class="drop-shadow-md pb-6 mx-auto"
-            />
-
-            <div class="flex gap-6 pb-5">
-              <a
-                href="https://www.instagram.com/LuminArteMx/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                class="text-sm font-semibold text-white/85 hover:text-white"
-              >
-                Instagram
-              </a>
-              <a
-                href="https://x.com/LuminArteMx"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="X (Twitter)"
-                class="text-sm font-semibold text-white/85 hover:text-white"
-              >
-                X
-              </a>
-              <a
-                href="https://www.tiktok.com/@luminartemx"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="TikTok"
-                class="text-sm font-semibold text-white/85 hover:text-white"
-              >
-                TikTok
-              </a>
-              <a
-                href="https://www.youtube.com/@LuminArteMx"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="YouTube"
-                class="text-sm font-semibold text-white/85 hover:text-white"
-              >
-                YouTube
-              </a>
-            </div>
-          </ul>
-
-          <ul class="p-5">
-            <p class="pb-4 text-2xl font-bold text-white/90">Servicios</p>
-            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
-              Sitios AR
-            </li>
-            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
-              Hospedaje
-            </li>
-            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
-              Modelado
-            </li>
-          </ul>
-
-          <ul class="p-5">
-            <p class="pb-4 text-2xl font-bold text-white/90">Empresa</p>
-            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
-              Quiénes Somos
-            </li>
-            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
-              Servicios
-            </li>
-            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
-              Cotizaciones
-            </li>
-          </ul>
-
-          <ul class="p-5">
-            <p class="pb-4 text-2xl font-bold text-white/90">Soporte</p>
-            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
-              Contacto
-            </li>
-            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
-              Blog
-            </li>
-            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
-              Recursos
-            </li>
-          </ul>
-        </div>
-      )
-    }
-
-    {
-      !full && (
-        <div class="mb-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 md:p-5">
-          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div class="flex items-center gap-3">
-              <img
-                src="/logo.png"
-                width="72"
-                height="36"
-                alt="LuminArte"
-                class="h-10 w-auto drop-shadow-md"
-              />
-              <div>
-                <p class="text-sm font-semibold text-white">LuminArte</p>
-                <p class="text-xs text-white/70">
-                  Propuestas visuales y acompañamiento para tu proyecto
-                </p>
-              </div>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-3 text-sm text-white/85">
-              <a href="tel:+524771737105" class="hover:text-white">
-                +52 477 173 7105
-              </a>
-              <span class="hidden text-white/30 md:inline">•</span>
-              <a href="mailto:contacto@luminarte.mx" class="hover:text-white">
-                contacto@luminarte.mx
-              </a>
-              <span class="hidden text-white/30 md:inline">•</span>
-              <a
-                href="https://wa.me/524771737105"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="hover:text-white"
-              >
-                WhatsApp
-              </a>
-            </div>
-          </div>
-
-          <div class="mt-4 flex flex-col items-center justify-between gap-3 border-t border-white/8 pt-4 md:flex-row">
-            <p class="text-xs text-white/65">
-              También puedes encontrarnos en redes
+    <div class="mb-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 md:p-5">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-3">
+          <img
+            src="/logo.png"
+            width="72"
+            height="36"
+            alt="LuminArte"
+            class="h-10 w-auto drop-shadow-md"
+          />
+          <div>
+            <p class="text-sm font-semibold text-white">LuminArte</p>
+            <p class="text-xs text-white/70">
+              Propuestas visuales y acompañamiento para tu proyecto
             </p>
-            <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-white/75">
-              <a
-                href="https://www.instagram.com/LuminArteMx/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                class="hover:text-white"
-              >
-                Instagram
-              </a>
-              <a
-                href="https://www.facebook.com/LuminArteMx/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-                class="hover:text-white"
-              >
-                Facebook
-              </a>
-              <a
-                href="https://www.youtube.com/@LuminArteMx"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="YouTube"
-                class="hover:text-white"
-              >
-                YouTube
-              </a>
-              <a
-                href="https://www.tiktok.com/@luminartemx"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="TikTok"
-                class="hover:text-white"
-              >
-                TikTok
-              </a>
-              <a
-                href="https://x.com/LuminArteMx"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="X"
-                class="hover:text-white"
-              >
-                X
-              </a>
-            </div>
           </div>
         </div>
-      )
-    }
+
+        <div class="flex flex-wrap items-center gap-3 text-sm text-white/85">
+          <a href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`} class="hover:text-white">
+            {CONTACT_PHONE}
+          </a>
+          <span class="hidden text-white/30 md:inline">&bull;</span>
+          <a href={`mailto:${CONTACT_EMAIL}`} class="hover:text-white">
+            {CONTACT_EMAIL}
+          </a>
+          <span class="hidden text-white/30 md:inline">&bull;</span>
+          <a
+            href={WHATSAPP_BASE}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-white"
+          >
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-col items-center justify-between gap-3 border-t border-white/8 pt-4 md:flex-row">
+        <p class="text-xs text-white/65">
+          También puedes encontrarnos en redes
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-white/75">
+          {SOCIAL_LINKS.map((link) => (
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={link.ariaLabel}
+              class="hover:text-white"
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
 
     <div
       class="text-white flex flex-col justify-center items-center text-center pb-2"
     >
-      <h1 class="font-semibold">
-        © {currentYear} All rights reserved |
+      <p class="font-semibold">
+        &copy; {currentYear} All rights reserved |
         <a
-          href="https://luminarte.mx"
+          href={SITE_URL}
           target="_blank"
           rel="noopener noreferrer"
           class="text-red-600 font-semibold cursor-pointer"
         >
           {" "}Lumin<span class="text-white">Arte</span>
         </a>
-      </h1>
+      </p>
     </div>
   </div>
 </footer>

@@ -1,45 +1,83 @@
 import { absolutizeUrl, contentFetch } from "./client";
 
+// ---------------------------------------------------------------------------
+// Strapi media types – covers v4 flat, v4 nested and v5 response shapes
+// ---------------------------------------------------------------------------
+
+/** A single media object as returned by Strapi (any version). */
+export type StrapiMediaItem = {
+  url?: string;
+  data?: { url?: string; attributes?: { url?: string } } | null;
+  attributes?: { url?: string };
+};
+
+/**
+ * A media field value in a Strapi response.
+ * Can be a single item, an array, or wrapped in a `data` envelope.
+ */
+export type StrapiMediaField =
+  | StrapiMediaItem
+  | StrapiMediaItem[]
+  | { data: StrapiMediaItem | StrapiMediaItem[] | null }
+  | null
+  | undefined;
+
+// ---------------------------------------------------------------------------
+// Domain types
+// ---------------------------------------------------------------------------
+
 export type ProjectDoc = {
   documentId: string;
   slug: string;
   name?: string;
   description?: string;
-  model?: any;
-  images?: any;
-  videos?: any;
+  model?: StrapiMediaField;
+  images?: StrapiMediaField;
+  videos?: StrapiMediaField;
 };
 
-type ListResponse<T> = { data: T[]; meta?: any };
+type ListResponse<T> = { data: T[]; meta?: Record<string, unknown> };
 
-export function getMediaUrl(media: any): string | null {
+// ---------------------------------------------------------------------------
+// Media URL helpers
+// ---------------------------------------------------------------------------
+
+export function getMediaUrl(media: StrapiMediaField): string | null {
+  if (!media) return null;
+
+  // Narrow: arrays and `data`-envelope are not a single item
+  const item = media as StrapiMediaItem;
+
   const url =
-    media?.url ??
-    media?.data?.url ??
-    media?.data?.attributes?.url ??
-    media?.attributes?.url ??
+    item?.url ??
+    item?.data?.url ??
+    item?.data?.attributes?.url ??
+    item?.attributes?.url ??
     null;
 
   if (!url || typeof url !== "string") return null;
   return absolutizeUrl(url);
 }
 
-export function getMediaUrlsFromGallery(images: any): string[] {
+export function getMediaUrlsFromGallery(images: StrapiMediaField): string[] {
+  if (!images) return [];
+
   const directSingle = getMediaUrl(images);
   if (directSingle) return [directSingle];
 
-  const dataSingle = getMediaUrl(images?.data);
+  const asRecord = images as { data?: unknown };
+  const dataSingle = getMediaUrl(asRecord?.data as StrapiMediaField);
   if (dataSingle) return [dataSingle];
 
-  const arr = Array.isArray(images)
+  const arr: StrapiMediaItem[] = Array.isArray(images)
     ? images
-    : Array.isArray(images?.data)
-      ? images.data
+    : Array.isArray(asRecord?.data)
+      ? (asRecord.data as StrapiMediaItem[])
       : [];
 
   return arr
-    .map((img: any) => getMediaUrl(img))
-    .filter((u: any): u is string => typeof u === "string" && u.length > 0);
+    .map((img) => getMediaUrl(img))
+    .filter((u): u is string => typeof u === "string" && u.length > 0);
 }
 
 

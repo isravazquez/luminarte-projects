@@ -13,6 +13,7 @@ const {
   canonicalUrl = "",
   preconnectOrigins = [],
   ogType = "website",
+  includeModelViewer = false,
 } = Astro.props;
 
 const pageUrl = Astro.url?.toString?.() ?? "";
@@ -90,22 +91,27 @@ const normalizedPreconnectOrigins = Array.from(
       ))
     }
 
-    <!-- <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script> -->
-    <script type="module" src="/vendor/model-viewer.min.js"></script>
-    <script is:inline type="importmap">
-      {
-        "imports": {
-          "three": "/vendor/three.module.min.js"
-        }
-      }
-    </script>
-    <script type="module" src="/vendor/model-viewer-effects.min.js"></script>
+    {
+      includeModelViewer && (
+        <>
+          <script type="module" src="/vendor/model-viewer.min.js"></script>
+          <script is:inline type="importmap">
+            {
+              "imports": {
+                "three": "/vendor/three.module.min.js"
+              }
+            }
+          </script>
+          <script type="module" src="/vendor/model-viewer-effects.min.js"></script>
+        </>
+      )
+    }
   </head>
   <body class="min-w-80">
     <Header compact={headerCompact} />
     <main class:list={["text-white w-full justify-center", mainClass || "mx-5 my-4"]}>
       <slot />
     </main>
-    <Footer full={false} />
+    <Footer />
   </body>
 </html>

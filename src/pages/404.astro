@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
-
-const whatsappUrl = "https://wa.me/524771737105";
+import { WHATSAPP_BASE } from "@lib/constants";
 ---
 
 <BaseLayout
@@ -24,7 +23,7 @@ const whatsappUrl = "https://wa.me/524771737105";
         Ir al inicio
       </a>
       <a
-        href={whatsappUrl}
+        href={WHATSAPP_BASE}
         target="_blank"
         rel="noopener noreferrer"
         class="btn-press btn-primary text-sm sm:text-base"
