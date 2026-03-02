@@ -7,7 +7,6 @@ const {
   cameraControls = true,
   showHint = true,
   loadingLabel = "Cargando vista 3D",
-  ledMeshPrefix = "led",
   showBloomToggle = true,
   class: className = "",
 } = Astro.props;
@@ -69,7 +68,6 @@ const {
     environment-image="neutral"
     loading="eager"
     reveal="auto"
-    data-led-prefix={ledMeshPrefix}
     {...cameraControls ? { "camera-controls": "" } : {}}
   >
     <effect-composer data-selective-composer render-mode="quality">
@@ -139,7 +137,6 @@ const {
           setTouchLock(true);
         }
 
-        const ledPrefix = (viewer.getAttribute("data-led-prefix") || "led").toLowerCase();
         const baseBloomStrength = Number(selectiveBloom?.getAttribute("strength") || "1.6");
         let bloomEnabled = true;
 
@@ -181,12 +178,9 @@ const {
           };
 
           selectiveComposer.selection.forEach((obj) => {
-            const meshName = (obj?.name || "").toLowerCase();
-            const matchesName =
-              meshName && (meshName === ledPrefix || meshName.startsWith(ledPrefix));
             const matchesEmissive = hasEmissiveMaterial(obj);
 
-            const shouldSelect = matchesName && matchesEmissive;
+            const shouldSelect = matchesEmissive;
 
             if (shouldSelect) {
               selection.push(obj);
