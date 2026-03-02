@@ -1,5 +1,6 @@
 ---
 const { full = true } = Astro.props;
+const currentYear = new Date().getFullYear();
 ---
 
 <footer class="mt-auto w-full">
@@ -18,7 +19,7 @@ const { full = true } = Astro.props;
 
             <div class="flex gap-6 pb-5">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/LuminArteMx/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -27,7 +28,7 @@ const { full = true } = Astro.props;
                 Instagram
               </a>
               <a
-                href="https://x.com"
+                href="https://x.com/LuminArteMx"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="X (Twitter)"
@@ -36,7 +37,7 @@ const { full = true } = Astro.props;
                 X
               </a>
               <a
-                href="https://tiktok.com"
+                href="https://www.tiktok.com/@luminartemx"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="TikTok"
@@ -45,7 +46,7 @@ const { full = true } = Astro.props;
                 TikTok
               </a>
               <a
-                href="https://youtube.com"
+                href="https://www.youtube.com/@LuminArteMx"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="YouTube"
@@ -57,40 +58,40 @@ const { full = true } = Astro.props;
           </ul>
 
           <ul class="p-5">
-            <p class="text-gray-800 font-bold text-2xl pb-4">Servicios</p>
-            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+            <p class="pb-4 text-2xl font-bold text-white/90">Servicios</p>
+            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
               Sitios AR
             </li>
-            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
               Hospedaje
             </li>
-            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
               Modelado
             </li>
           </ul>
 
           <ul class="p-5">
-            <p class="text-gray-800 font-bold text-2xl pb-4">Empresa</p>
-            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+            <p class="pb-4 text-2xl font-bold text-white/90">Empresa</p>
+            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
               Quiénes Somos
             </li>
-            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
               Servicios
             </li>
-            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
               Cotizaciones
             </li>
           </ul>
 
           <ul class="p-5">
-            <p class="text-gray-800 font-bold text-2xl pb-4">Soporte</p>
-            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+            <p class="pb-4 text-2xl font-bold text-white/90">Soporte</p>
+            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
               Contacto
             </li>
-            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
               Blog
             </li>
-            <li class="text-gray-500 text-md pb-2 font-semibold hover:text-blue-600 cursor-pointer">
+            <li class="cursor-pointer pb-2 text-md font-semibold text-white/65 hover:text-white">
               Recursos
             </li>
           </ul>
@@ -119,11 +120,11 @@ const { full = true } = Astro.props;
             </div>
 
             <div class="flex flex-wrap items-center gap-3 text-sm text-white/85">
-              <a href="tel:+524771737105" target="_blank" rel="noopener noreferrer" class="hover:text-white">
+              <a href="tel:+524771737105" class="hover:text-white">
                 +52 477 173 7105
               </a>
               <span class="hidden text-white/30 md:inline">•</span>
-              <a href="mailto:contacto@luminarte.mx" target="_blank" rel="noopener noreferrer" class="hover:text-white">
+              <a href="mailto:contacto@luminarte.mx" class="hover:text-white">
                 contacto@luminarte.mx
               </a>
               <span class="hidden text-white/30 md:inline">•</span>
@@ -198,7 +199,7 @@ const { full = true } = Astro.props;
       class="text-white flex flex-col justify-center items-center text-center pb-2"
     >
       <h1 class="font-semibold">
-        © 2026 All rights reserved |
+        © {currentYear} All rights reserved |
         <a
           href="https://luminarte.mx"
           target="_blank"
