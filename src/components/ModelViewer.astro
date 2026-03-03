@@ -23,20 +23,12 @@ const {
     <small>Esto puede tardar unos segundos dependiendo de tu conexión.</small>
   </div>
 
-  <div class="lv-touch-gate hidden" data-model-touch-gate aria-hidden="true">
-    <button type="button" class="lv-touch-gate-btn" data-model-enable-touch>
-      Interactuar
-    </button>
-  </div>
-
   <button
     type="button"
-    class="lv-touch-lock hidden"
-    data-model-disable-touch
-    aria-label="Bloquear interacción del modelo"
-    title="Bloquear interacción"
+    class="btn-press btn-tertiary lv-touch-toggle hidden"
+    data-model-touch-toggle
   >
-    Bloquear giro
+    Interactuar
   </button>
 
   {
@@ -45,9 +37,9 @@ const {
         type="button"
         class="btn-press btn-tertiary lv-bloom-toggle hidden"
         data-model-bloom-toggle
-        aria-pressed="true"
+        aria-pressed="false"
       >
-        Apagar
+        Encender
       </button>
     )
   }
@@ -62,6 +54,7 @@ const {
     alt={name}
     auto-rotate
     auto-rotate-delay="0"
+    rotation-per-second="18deg"
     exposure="1.6"
     shadow-intensity="0.9"
     shadow-softness="0.85"
@@ -113,32 +106,47 @@ const {
         const loading = shell.querySelector("[data-model-loading]");
         const progressBar = shell.querySelector("[data-model-progress]");
         const progressLabel = shell.querySelector("[data-model-progress-label]");
-        const touchGate = shell.querySelector("[data-model-touch-gate]");
-        const enableTouchBtn = shell.querySelector("[data-model-enable-touch]");
-        const disableTouchBtn = shell.querySelector("[data-model-disable-touch]");
+        const touchToggleBtn = shell.querySelector("[data-model-touch-toggle]");
         const bloomToggleBtn = shell.querySelector("[data-model-bloom-toggle]");
         const selectiveComposer = shell.querySelector("[data-selective-composer]");
         const selectiveBloom = shell.querySelector("[data-selective-bloom]");
 
-        if (!viewer || !loading || !progressBar || !progressLabel || !touchGate || !enableTouchBtn || !disableTouchBtn) return;
+        if (!viewer || !loading || !progressBar || !progressLabel) return;
 
+        // -------------------------------------------------------------------
+        // Touch interaction toggle (only on touch devices with camera-controls)
+        // -------------------------------------------------------------------
         const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
-        const shouldLockTouch = isTouchDevice && viewer.hasAttribute("camera-controls");
+        const shouldShowTouchToggle = isTouchDevice && viewer.hasAttribute("camera-controls") && touchToggleBtn;
+
+        let touchLocked = true;
 
         const setTouchLock = (locked) => {
+          touchLocked = locked;
           shell.classList.toggle("is-touch-locked", locked);
           shell.classList.toggle("is-touch-unlocked", !locked);
-          touchGate.classList.toggle("hidden", !locked);
-          touchGate.setAttribute("aria-hidden", locked ? "false" : "true");
-          disableTouchBtn.classList.toggle("hidden", locked);
+          if (touchToggleBtn) {
+            touchToggleBtn.textContent = locked ? "Interactuar" : "Bloquear";
+          }
         };
 
-        if (shouldLockTouch) {
+        if (shouldShowTouchToggle) {
           setTouchLock(true);
+          touchToggleBtn.classList.remove("hidden");
+
+          touchToggleBtn.addEventListener("click", () => {
+            setTouchLock(!touchLocked);
+            if (!touchLocked) {
+              shell.classList.add("is-interacting");
+            }
+          });
         }
 
+        // -------------------------------------------------------------------
+        // Bloom toggle (starts OFF so user discovers it)
+        // -------------------------------------------------------------------
         const baseBloomStrength = Number(selectiveBloom?.getAttribute("strength") || "1.6");
-        let bloomEnabled = true;
+        let bloomEnabled = false;
 
         const setBloomToggleState = (enabled) => {
           bloomEnabled = enabled;
@@ -153,8 +161,9 @@ const {
           bloomToggleBtn.setAttribute("aria-hidden", visible ? "false" : "true");
         };
 
-        setBloomToggleState(true);
+        setBloomToggleState(false);
         setBloomToggleVisibility(false);
+
         const applySelectiveBloom = () => {
           if (!selectiveComposer || !selectiveBloom || !selectiveComposer.selection) {
             return;
@@ -178,11 +187,7 @@ const {
           };
 
           selectiveComposer.selection.forEach((obj) => {
-            const matchesEmissive = hasEmissiveMaterial(obj);
-
-            const shouldSelect = matchesEmissive;
-
-            if (shouldSelect) {
+            if (hasEmissiveMaterial(obj)) {
               selection.push(obj);
             }
           });
@@ -210,6 +215,9 @@ const {
           );
         }
 
+        // -------------------------------------------------------------------
+        // Loading progress
+        // -------------------------------------------------------------------
         const markLoaded = () => {
           shell.classList.add("is-loaded");
           loading.setAttribute("aria-hidden", "true");
@@ -236,15 +244,6 @@ const {
         viewer.addEventListener("camera-change", () => {
           shell.classList.add("is-interacting");
         }, { once: true });
-
-        enableTouchBtn.addEventListener("click", () => {
-          setTouchLock(false);
-          shell.classList.add("is-interacting");
-        });
-
-        disableTouchBtn.addEventListener("click", () => {
-          setTouchLock(true);
-        });
       });
     };
 
