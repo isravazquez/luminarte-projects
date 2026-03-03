@@ -8,7 +8,7 @@ const currentYear = new Date().getFullYear();
   <div class="mx-auto w-full max-w-7xl px-4 pb-3">
     <div class="mb-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 md:p-5">
       <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div class="flex items-center gap-3">
+        <div class="flex flex-col items-center gap-2 md:flex-row md:gap-3">
           <img
             src="/logo.png"
             width="72"
@@ -16,7 +16,7 @@ const currentYear = new Date().getFullYear();
             alt="LuminArte"
             class="h-10 w-auto drop-shadow-md"
           />
-          <div>
+          <div class="text-center md:text-left">
             <p class="text-sm font-semibold text-white">LuminArte</p>
             <p class="text-xs text-white/70">
               Propuestas visuales y acompañamiento para tu proyecto
@@ -24,7 +24,7 @@ const currentYear = new Date().getFullYear();
           </div>
         </div>
 
-        <div class="flex flex-wrap items-center gap-3 text-sm text-white/85">
+        <div class="flex flex-col items-center gap-2 text-sm text-white/85 md:flex-row md:flex-wrap md:gap-3">
           <a href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`} class="hover:text-white">
             {CONTACT_PHONE}
           </a>

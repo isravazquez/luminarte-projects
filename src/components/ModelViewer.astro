@@ -52,15 +52,14 @@ const {
     autoplay
     ar-placement="wall"
     alt={name}
-    auto-rotate
-    auto-rotate-delay="0"
-    rotation-per-second="18deg"
+    interpolation-decay="200"
     exposure="1.6"
     shadow-intensity="0.9"
     shadow-softness="0.85"
     environment-image="neutral"
     loading="eager"
     reveal="auto"
+    interaction-prompt="none"
     {...cameraControls ? { "camera-controls": "" } : {}}
   >
     <effect-composer data-selective-composer render-mode="quality">
@@ -127,6 +126,7 @@ const {
           shell.classList.toggle("is-touch-unlocked", !locked);
           if (touchToggleBtn) {
             touchToggleBtn.textContent = locked ? "Interactuar" : "Bloquear";
+            touchToggleBtn.classList.toggle("lv-toggle-active", !locked);
           }
         };
 
@@ -153,6 +153,7 @@ const {
           if (!bloomToggleBtn) return;
           bloomToggleBtn.textContent = enabled ? "Apagar" : "Encender";
           bloomToggleBtn.setAttribute("aria-pressed", enabled ? "true" : "false");
+          bloomToggleBtn.classList.toggle("lv-toggle-active", enabled);
         };
 
         const setBloomToggleVisibility = (visible) => {
@@ -243,6 +244,64 @@ const {
 
         viewer.addEventListener("camera-change", () => {
           shell.classList.add("is-interacting");
+        }, { once: true });
+
+        // -------------------------------------------------------------------
+        // Showcase rotation (vitrina): oscillate ±90° through the front
+        // Waypoints: 0° → +90° → -90° → +90° → -90° … (always passes 0°)
+        // -------------------------------------------------------------------
+        // First move is short (0→+30), then alternates ±60 passing through front
+        const SHOWCASE_WAYPOINTS = ["30deg 75deg 105%", "-30deg 75deg 105%"];
+        const SHOWCASE_DWELL_MS = 1200;       // pause at each end before reversing
+        const SHOWCASE_TRAVEL_MS = 5500;      // slow travel per leg
+        const SHOWCASE_IDLE_RESUME_MS = 3000; // resume after user stops interacting
+
+        let showcaseIndex = 0;
+        let showcaseTimer = null;
+        let showcasePaused = false;
+        let idleResumeTimer = null;
+
+        const advanceShowcase = () => {
+          if (showcasePaused) return;
+          viewer.cameraOrbit = SHOWCASE_WAYPOINTS[showcaseIndex];
+          showcaseIndex = (showcaseIndex + 1) % SHOWCASE_WAYPOINTS.length;
+          showcaseTimer = setTimeout(advanceShowcase, SHOWCASE_TRAVEL_MS + SHOWCASE_DWELL_MS);
+        };
+
+        const startShowcase = () => {
+          showcasePaused = false;
+          // Start from current position toward first waypoint
+          advanceShowcase();
+        };
+
+        const pauseShowcase = () => {
+          showcasePaused = true;
+          if (showcaseTimer) {
+            clearTimeout(showcaseTimer);
+            showcaseTimer = null;
+          }
+        };
+
+        const scheduleResume = () => {
+          if (idleResumeTimer) clearTimeout(idleResumeTimer);
+          idleResumeTimer = setTimeout(() => {
+            startShowcase();
+          }, SHOWCASE_IDLE_RESUME_MS);
+        };
+
+        // Pause showcase on user interaction, resume after idle
+        viewer.addEventListener("camera-change", (e) => {
+          const source = e.detail?.source;
+          if (source === "user-interaction") {
+            pauseShowcase();
+            scheduleResume();
+          }
+        });
+
+        // Start showcase after model loads
+        viewer.addEventListener("load", () => {
+          // Small delay so the model settles before starting the vitrina
+          setTimeout(startShowcase, 1200);
         }, { once: true });
       });
     };
