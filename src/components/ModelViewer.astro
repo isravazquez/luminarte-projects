@@ -143,10 +143,10 @@ const {
         }
 
         // -------------------------------------------------------------------
-        // Bloom toggle (starts OFF so user discovers it)
+        // Bloom toggle (starts ON by default)
         // -------------------------------------------------------------------
         const baseBloomStrength = Number(selectiveBloom?.getAttribute("strength") || "1.6");
-        let bloomEnabled = false;
+        let bloomEnabled = true;
 
         const setBloomToggleState = (enabled) => {
           bloomEnabled = enabled;
@@ -162,7 +162,7 @@ const {
           bloomToggleBtn.setAttribute("aria-hidden", visible ? "false" : "true");
         };
 
-        setBloomToggleState(false);
+        setBloomToggleState(true);
         setBloomToggleVisibility(false);
 
         const applySelectiveBloom = () => {
