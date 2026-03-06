@@ -169,12 +169,17 @@ const {
           }
 
           const emissiveMeshSet = new Set();
+          const meshSet = new Set();
           const hasEmissiveChannel = (material) => {
-            if (!material || !material.emissive) return false;
+            if (!material) return false;
             const emissive = material.emissive;
             const emissiveIntensity =
               typeof material.emissiveIntensity === "number" ? material.emissiveIntensity : 1;
-            return emissiveIntensity > 0 && (emissive.r > 0 || emissive.g > 0 || emissive.b > 0);
+            const hasEmissiveColor = Boolean(
+              emissive && (emissive.r > 0 || emissive.g > 0 || emissive.b > 0),
+            );
+            const hasEmissiveMap = Boolean(material.emissiveMap);
+            return emissiveIntensity > 0 && (hasEmissiveColor || hasEmissiveMap);
           };
 
           const hasEmissiveMaterial = (obj) => {
@@ -183,7 +188,7 @@ const {
               const materials = obj.material.filter(Boolean);
               if (materials.length === 0) return false;
               if (materials.length === 1) return hasEmissiveChannel(materials[0]);
-              return materials.every((material) => hasEmissiveChannel(material));
+              return materials.some((material) => hasEmissiveChannel(material));
             }
             return hasEmissiveChannel(obj.material);
           };
@@ -192,6 +197,7 @@ const {
             if (!root) return;
             const visit = (node) => {
               if (!node?.isMesh) return;
+              meshSet.add(node);
               if (!hasEmissiveMaterial(node)) return;
               emissiveMeshSet.add(node);
             };
@@ -209,9 +215,11 @@ const {
           });
 
           const selection = Array.from(emissiveMeshSet);
+          const fallbackSelection = Array.from(meshSet);
+          const effectiveSelection = selection.length > 0 ? selection : fallbackSelection;
 
-          selectiveBloom.selection = selection;
-          const hasSelectableBloomMeshes = selection.length > 0;
+          selectiveBloom.selection = effectiveSelection;
+          const hasSelectableBloomMeshes = effectiveSelection.length > 0;
           setBloomToggleVisibility(hasSelectableBloomMeshes);
           selectiveBloom.strength =
             bloomEnabled && hasSelectableBloomMeshes ? baseBloomStrength : 0;
