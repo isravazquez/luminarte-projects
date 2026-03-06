@@ -54,7 +54,9 @@ const {
     ar-placement="wall"
     alt={name}
     interpolation-decay="200"
-    exposure="2.2"
+    exposure="1.6"
+    shadow-intensity="0.9"
+    shadow-softness="0.85"
     environment-image="neutral"
     loading="eager"
     reveal="auto"
@@ -68,6 +70,7 @@ const {
         radius="0.35"
         threshold="0.16"
       ></selective-bloom-effect>
+      <color-grade-effect></color-grade-effect>
     </effect-composer>
 
     <div class="lv-progress" slot="progress-bar" aria-hidden="true">
@@ -143,7 +146,7 @@ const {
         // -------------------------------------------------------------------
         // Bloom toggle (starts ON by default)
         // -------------------------------------------------------------------
-        const baseBloomStrength = Number(selectiveBloom?.getAttribute("strength") || "0.9");
+        const baseBloomStrength = Number(selectiveBloom?.getAttribute("strength") || "1.6");
         let bloomEnabled = true;
 
         const setBloomToggleState = (enabled) => {
@@ -250,9 +253,9 @@ const {
         // -------------------------------------------------------------------
         // First move is short (0→+30), then alternates ±60 passing through front
         const SHOWCASE_WAYPOINTS = ["30deg 75deg 105%", "-30deg 75deg 105%"];
-        const SHOWCASE_DWELL_MS = 2200;
-        const SHOWCASE_TRAVEL_MS = 13000;
-        const SHOWCASE_IDLE_RESUME_MS = 4500;
+        const SHOWCASE_DWELL_MS = 1200;       // pause at each end before reversing
+        const SHOWCASE_TRAVEL_MS = 5500;      // slow travel per leg
+        const SHOWCASE_IDLE_RESUME_MS = 3000; // resume after user stops interacting
 
         let showcaseIndex = 0;
         let showcaseTimer = null;
@@ -298,7 +301,8 @@ const {
 
         // Start showcase after model loads
         viewer.addEventListener("load", () => {
-          setTimeout(startShowcase, 600);
+          // Small delay so the model settles before starting the vitrina
+          setTimeout(startShowcase, 1200);
         }, { once: true });
       });
     };
