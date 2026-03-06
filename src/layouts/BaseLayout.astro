@@ -94,7 +94,6 @@ const normalizedPreconnectOrigins = Array.from(
     {
       includeModelViewer && (
         <>
-          <script type="module" src="/vendor/model-viewer.min.js"></script>
           <script is:inline type="importmap">
             {
               "imports": {
@@ -102,6 +101,7 @@ const normalizedPreconnectOrigins = Array.from(
               }
             }
           </script>
+          <script type="module" src="/vendor/model-viewer-module.min.js"></script>
           <script type="module" src="/vendor/model-viewer-effects.min.js"></script>
         </>
       )
