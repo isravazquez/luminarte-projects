@@ -169,7 +169,6 @@ const {
           }
 
           const emissiveMeshSet = new Set();
-          const meshSet = new Set();
           const hasEmissiveChannel = (material) => {
             if (!material) return false;
             const emissive = material.emissive;
@@ -197,7 +196,6 @@ const {
             if (!root) return;
             const visit = (node) => {
               if (!node?.isMesh) return;
-              meshSet.add(node);
               if (!hasEmissiveMaterial(node)) return;
               emissiveMeshSet.add(node);
             };
@@ -215,11 +213,9 @@ const {
           });
 
           const selection = Array.from(emissiveMeshSet);
-          const fallbackSelection = Array.from(meshSet);
-          const effectiveSelection = selection.length > 0 ? selection : fallbackSelection;
 
-          selectiveBloom.selection = effectiveSelection;
-          const hasSelectableBloomMeshes = effectiveSelection.length > 0;
+          selectiveBloom.selection = selection;
+          const hasSelectableBloomMeshes = selection.length > 0;
           setBloomToggleVisibility(hasSelectableBloomMeshes);
           selectiveBloom.strength =
             bloomEnabled && hasSelectableBloomMeshes ? baseBloomStrength : 0;
