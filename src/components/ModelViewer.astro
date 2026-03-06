@@ -168,7 +168,7 @@ const {
             return;
           }
 
-          const selection = [];
+          const emissiveMeshSet = new Set();
           const hasEmissiveChannel = (material) => {
             if (!material || !material.emissive) return false;
             const emissive = material.emissive;
@@ -180,16 +180,35 @@ const {
           const hasEmissiveMaterial = (obj) => {
             if (!obj || !obj.material) return false;
             if (Array.isArray(obj.material)) {
-              return obj.material.some((material) => hasEmissiveChannel(material));
+              const materials = obj.material.filter(Boolean);
+              if (materials.length === 0) return false;
+              if (materials.length === 1) return hasEmissiveChannel(materials[0]);
+              return materials.every((material) => hasEmissiveChannel(material));
             }
             return hasEmissiveChannel(obj.material);
           };
 
-          selectiveComposer.selection.forEach((obj) => {
-            if (hasEmissiveMaterial(obj)) {
-              selection.push(obj);
+          const collectEmissiveMeshes = (root) => {
+            if (!root) return;
+            const visit = (node) => {
+              if (!node?.isMesh) return;
+              if (!hasEmissiveMaterial(node)) return;
+              emissiveMeshSet.add(node);
+            };
+
+            if (typeof root.traverse === "function") {
+              root.traverse(visit);
+              return;
             }
+
+            visit(root);
+          };
+
+          selectiveComposer.selection.forEach((obj) => {
+            collectEmissiveMeshes(obj);
           });
+
+          const selection = Array.from(emissiveMeshSet);
 
           selectiveBloom.selection = selection;
           const hasSelectableBloomMeshes = selection.length > 0;
