@@ -25,12 +25,16 @@ Crear `.env` en `luminarte-projects` con:
 ```bash
 CMS_URL=https://tu-cms.com
 CMS_TOKEN=tu_token_opcional
+PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+PUBLIC_CLARITY_PROJECT_ID=tu_project_id_de_clarity
 ```
 
 Notas:
 
 - `CMS_TOKEN` es opcional si el endpoint es público.
 - `CMS_URL` es requerido.
+- `PUBLIC_GA_MEASUREMENT_ID` es opcional (activa Google Analytics 4 si existe).
+- `PUBLIC_CLARITY_PROJECT_ID` es opcional (activa Microsoft Clarity si existe).
 
 ## Rutas principales
 

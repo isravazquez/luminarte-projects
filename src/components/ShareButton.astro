@@ -1,5 +1,11 @@
 ---
-const { title, text, url } = Astro.props;
+const {
+  title,
+  text,
+  url,
+  projectSlug = "",
+  projectName = title,
+} = Astro.props;
 ---
 
 <div class="mt-4 flex flex-col items-center justify-center gap-2 text-center">
@@ -10,6 +16,8 @@ const { title, text, url } = Astro.props;
     data-share-title={title}
     data-share-text={text}
     data-share-url={url}
+    data-project-slug={projectSlug}
+    data-project-name={projectName}
   >
     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
     Compartir propuesta
@@ -37,16 +45,29 @@ const { title, text, url } = Astro.props;
       const title = btn.getAttribute("data-share-title") || document.title;
       const text = btn.getAttribute("data-share-text") || "";
       const url = btn.getAttribute("data-share-url") || window.location.href;
+      const projectSlug = btn.getAttribute("data-project-slug") || "";
+      const projectName = btn.getAttribute("data-project-name") || title;
+
+      const trackShare = (method) => {
+        if (typeof window.lvTrackEvent !== "function") return;
+        window.lvTrackEvent("proposal_share", {
+          project_slug: projectSlug,
+          project_name: projectName,
+          method,
+        });
+      };
 
       try {
         if (navigator.share) {
           await navigator.share({ title, text, url });
+          trackShare("native_share");
           setFeedback("Propuesta compartida");
           return;
         }
 
         if (navigator.clipboard?.writeText) {
           await navigator.clipboard.writeText(url);
+          trackShare("clipboard");
           setFeedback("Enlace copiado");
           return;
         }

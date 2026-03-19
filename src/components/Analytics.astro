@@ -1,0 +1,85 @@
+---
+const gaMeasurementId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined)?.trim() ?? "";
+const clarityProjectId = (import.meta.env.PUBLIC_CLARITY_PROJECT_ID as string | undefined)?.trim() ?? "";
+const hasAnyAnalytics = Boolean(gaMeasurementId || clarityProjectId);
+---
+
+{
+  hasAnyAnalytics && (
+    <>
+      {
+        gaMeasurementId && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaMeasurementId)}`}
+            ></script>
+            <script is:inline define:vars={{ gaMeasurementId }}>
+              window.dataLayer = window.dataLayer || [];
+              function gtag() {
+                dataLayer.push(arguments);
+              }
+              window.gtag = window.gtag || gtag;
+              gtag("js", new Date());
+              gtag("config", gaMeasurementId);
+            </script>
+          </>
+        )
+      }
+
+      {
+        clarityProjectId && (
+          <script is:inline define:vars={{ clarityProjectId }}>
+            (function (c, l, a, r, i, t, y) {
+              c[a] =
+                c[a] ||
+                function () {
+                  (c[a].q = c[a].q || []).push(arguments);
+                };
+              t = l.createElement(r);
+              t.async = 1;
+              t.src = "https://www.clarity.ms/tag/" + i;
+              y = l.getElementsByTagName(r)[0];
+              y.parentNode.insertBefore(t, y);
+            })(window, document, "clarity", "script", clarityProjectId);
+          </script>
+        )
+      }
+
+      <script is:inline>
+        (() => {
+          if (typeof window.lvTrackEvent === "function") return;
+
+          const normalizeParams = (params) => {
+            if (!params || typeof params !== "object") return {};
+
+            const normalized = {};
+            Object.entries(params).forEach(([key, value]) => {
+              if (value === undefined || value === null) return;
+              if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+                normalized[key] = value;
+                return;
+              }
+              normalized[key] = String(value);
+            });
+
+            return normalized;
+          };
+
+          window.lvTrackEvent = (eventName, params = {}) => {
+            if (!eventName || typeof eventName !== "string") return;
+            const normalizedParams = normalizeParams(params);
+
+            if (typeof window.gtag === "function") {
+              window.gtag("event", eventName, normalizedParams);
+            }
+
+            if (typeof window.clarity === "function") {
+              window.clarity("event", eventName);
+            }
+          };
+        })();
+      </script>
+    </>
+  )
+}

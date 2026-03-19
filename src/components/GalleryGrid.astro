@@ -8,14 +8,27 @@ interface Props {
   items: GalleryItem[];
   title: string;
   videoPoster?: string;
+  projectSlug?: string;
+  projectName?: string;
 }
 
-const { items, title, videoPoster = "" } = Astro.props;
+const {
+  items,
+  title,
+  videoPoster = "",
+  projectSlug = "",
+  projectName = title,
+} = Astro.props;
 ---
 
 {
   items.length > 0 && (
-    <section class="mt-6" data-gallery-root>
+    <section
+      class="mt-6"
+      data-gallery-root
+      data-gallery-project-slug={projectSlug}
+      data-gallery-project-name={projectName}
+    >
       <div class="flex items-center justify-between gap-3">
         <h2 class="text-lg font-semibold md:text-xl">Apoyos visuales</h2>
         <span class="text-xs text-white/60">

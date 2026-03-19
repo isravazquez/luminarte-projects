@@ -88,7 +88,12 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
   headerCompact
   mainClass="px-4 pb-6"
 >
-  <section class="mx-auto w-full max-w-6xl">
+  <section
+    class="mx-auto w-full max-w-6xl"
+    data-proposal-root
+    data-project-slug={slug}
+    data-project-name={title}
+  >
     <div class="rounded-3xl border border-white/[0.12] bg-white/[0.06] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.2)] backdrop-blur-md md:p-6">
       <div class="flex flex-col gap-2 border-b border-white/10 pb-4 md:pb-5">
         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">
@@ -109,6 +114,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
                 name={title}
                 isInteractive={true}
                 height="min(62vh, 560px)"
+                analyticsProjectSlug={slug}
+                analyticsProjectName={title}
               />
             ) : (
               <div class="flex min-h-[320px] flex-col items-center justify-center rounded-xl border border-dashed border-white/20 bg-white/[0.03] px-5 text-center">
@@ -119,6 +126,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
                 </p>
                 <a
                   href={buildWhatsAppLink("info", subject, slug)}
+                  data-track-whatsapp
+                  data-whatsapp-intent="info"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="btn-press btn-secondary mt-5 text-sm"
@@ -152,6 +161,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
             <div class="mt-4 grid gap-2">
               <a
                 href={buildWhatsAppLink("changes", subject, slug)}
+                data-track-whatsapp
+                data-whatsapp-intent="changes"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="btn-press btn-secondary text-sm"
@@ -160,6 +171,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
               </a>
               <a
                 href={buildWhatsAppLink("approve", subject, slug)}
+                data-track-whatsapp
+                data-whatsapp-intent="approve"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="btn-press btn-primary text-sm"
@@ -189,11 +202,47 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
         )
       }
 
-      <GalleryGrid items={galleryItems} title={title} videoPoster={videoPoster} />
+      <GalleryGrid
+        items={galleryItems}
+        title={title}
+        videoPoster={videoPoster}
+        projectSlug={slug}
+        projectName={title}
+      />
 
-      <ShareButton title={shareTitle} text={shareText} url={shareUrl} />
+      <ShareButton
+        title={shareTitle}
+        text={shareText}
+        url={shareUrl}
+        projectSlug={slug}
+        projectName={title}
+      />
     </div>
   </section>
 
   <GalleryModal itemCount={galleryItems.length} />
+
+  <script is:inline>
+    (() => {
+      const proposalRoot = document.querySelector("[data-proposal-root]");
+      if (!proposalRoot) return;
+
+      const projectSlug = proposalRoot.getAttribute("data-project-slug") || "";
+      const projectName = proposalRoot.getAttribute("data-project-name") || "";
+      const whatsappButtons = Array.from(document.querySelectorAll("[data-track-whatsapp]"));
+
+      whatsappButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const intent = button.getAttribute("data-whatsapp-intent") || "unknown";
+          if (typeof window.lvTrackEvent !== "function") return;
+
+          window.lvTrackEvent("whatsapp_click", {
+            intent,
+            project_slug: projectSlug,
+            project_name: projectName,
+          });
+        });
+      });
+    })();
+  </script>
 </BaseLayout>

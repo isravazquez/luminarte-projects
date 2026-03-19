@@ -8,11 +8,18 @@ const {
   showHint = true,
   loadingLabel = "Cargando vista 3D",
   showBloomToggle = true,
+  analyticsProjectSlug = "",
+  analyticsProjectName = name,
   class: className = "",
 } = Astro.props;
 ---
 
-<div class={`lv-model-shell ${className}`} data-model-shell>
+<div
+  class={`lv-model-shell ${className}`}
+  data-model-shell
+  data-model-project-slug={analyticsProjectSlug}
+  data-model-project-name={analyticsProjectName}
+>
   <div class="lv-model-loading" data-model-loading>
     <div class="lv-spinner" aria-hidden="true"></div>
     <p>{loadingLabel}</p>
@@ -115,6 +122,9 @@ const {
         // -------------------------------------------------------------------
         const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
         const shouldShowTouchToggle = isTouchDevice && viewer.hasAttribute("camera-controls") && touchToggleBtn;
+        const projectSlug = shell.getAttribute("data-model-project-slug") || "";
+        const projectName = shell.getAttribute("data-model-project-name") || "";
+        let modelInteractionTracked = false;
 
         let touchLocked = true;
 
@@ -263,9 +273,20 @@ const {
           shell.classList.remove("is-loaded");
         });
 
-        viewer.addEventListener("camera-change", () => {
+        viewer.addEventListener("camera-change", (event) => {
+          if (event.detail?.source !== "user-interaction") return;
           shell.classList.add("is-interacting");
-        }, { once: true });
+
+          if (modelInteractionTracked) return;
+          modelInteractionTracked = true;
+
+          if (typeof window.lvTrackEvent === "function") {
+            window.lvTrackEvent("proposal_model_interaction", {
+              project_slug: projectSlug,
+              project_name: projectName,
+            });
+          }
+        });
 
         // -------------------------------------------------------------------
         // Showcase rotation (vitrina): oscillate ±90° through the front

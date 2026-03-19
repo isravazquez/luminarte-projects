@@ -110,6 +110,8 @@ const { itemCount } = Astro.props;
             poster: btn.getAttribute("data-gallery-poster") || "",
             alt: btn.getAttribute("data-gallery-alt") || "Referencia visual",
           }));
+          const projectSlug = root.getAttribute("data-gallery-project-slug") || "";
+          const projectName = root.getAttribute("data-gallery-project-name") || "";
 
           let currentIndex = 0;
           let previouslyFocusedElement = null;
@@ -218,7 +220,18 @@ const { itemCount } = Astro.props;
           };
 
           openButtons.forEach((btn, idx) => {
-            btn.addEventListener("click", () => open(idx));
+            btn.addEventListener("click", () => {
+              const item = items[idx];
+              if (typeof window.lvTrackEvent === "function") {
+                window.lvTrackEvent("proposal_media_click", {
+                  project_slug: projectSlug,
+                  project_name: projectName,
+                  media_type: item?.type || "image",
+                  media_index: idx + 1,
+                });
+              }
+              open(idx);
+            });
           });
 
           closeButtons.forEach((btn) => btn.addEventListener("click", close));
